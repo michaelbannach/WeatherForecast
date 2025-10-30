@@ -39,6 +39,11 @@ function App() {
                 maxLength={2}
             />
             <button onClick={fetchWeather}>Suchen</button>
+            
+            <button onClick={() => alert('Speicher-Funktion kommt noch')}>Speichern</button>
+        
+            
+           
 
             <div style={{ marginTop: 20 }}>
                 {result && <div>Ergebnis: {result}</div>}
