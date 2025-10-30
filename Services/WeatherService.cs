@@ -1,10 +1,11 @@
 using System.Text.Json;
 using WeatherForecast.Dtos;
+using WeatherForecast.Interfaces;
 using  WeatherForecast.Models;
 
 namespace WeatherForecast.Services;
 
-public sealed class WeatherService
+public sealed class WeatherService : IWeatherService
 {
     //HttpClient-Instanz -> HTTP-Anfragen an externe API
     private readonly HttpClient _http;

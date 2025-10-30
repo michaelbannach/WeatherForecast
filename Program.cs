@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WeatherForecast.Data;
+using WeatherForecast.Interfaces;
 using WeatherForecast.Models;
 using WeatherForecast.Services;
 
@@ -28,7 +29,7 @@ builder.Services
     
 builder.Services.AddHttpClient<WeatherService>(c => c.Timeout = TimeSpan.FromSeconds(10));
 
-builder.Services.AddHttpClient<WeatherService>(c => c.Timeout = TimeSpan.FromSeconds(10));
+builder.Services.AddHttpClient<IWeatherService, WeatherService>(c => c.Timeout = TimeSpan.FromSeconds(10));
 
     
 
