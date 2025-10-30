@@ -29,8 +29,8 @@ public sealed class WeatherService : IWeatherService
     public WeatherService(HttpClient http, IConfiguration config, ILogger<WeatherService> logger)
     {
         _http = http;
-        _logger = logger; // Logger speichern
-        _http.BaseAddress = new Uri(config["OpenWeatherMap:BaseUrl"]);
+        _logger = logger;
+        _http.BaseAddress = new Uri("https://api.openweathermap.org/data/2.5/");
         _apiKey = (config["OpenWeatherMap:ApiKey"] ??
             throw new InvalidOperationException("OpenWeatherMap:ApiKey is required")).Trim();
 
@@ -48,6 +48,7 @@ public sealed class WeatherService : IWeatherService
         }
 
         var url = $"weather?q={c},{co}&appid={_apiKey}&units=metric&lang=de";
+        
         _logger.LogInformation("Rufe OpenWeatherMap-API auf: {Url}", url);
 
         var (data, apiError) = await GetJsonAsync<CompleteWeatherResponse>(url);
@@ -58,7 +59,9 @@ public sealed class WeatherService : IWeatherService
         if (data != null)
             _logger.LogInformation("Wetterdaten erfolgreich geladen: {Data}", data);
 
-        return (data, apiError);
+        
+        return(data, apiError);
+        
     }
 
     private static bool Validate(string city, string country, out string c, out string co, out string? error)

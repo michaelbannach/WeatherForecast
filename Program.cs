@@ -12,26 +12,42 @@ builder.Configuration
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables();
 // Add services to the container.
-builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<AppDbContext>(opts =>
-    opts.UseMySql(
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         new MySqlServerVersion(new Version(8, 0, 21))));
 
+//Identity Services registrieren für UserManager, SignInManger, Rollen)
 builder.Services
-    .AddIdentity<ApplicationUser, IdentityRole>(opt =>
+        //Passwortrichtlinien
+    .AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
-        opt.SignIn.RequireConfirmedAccount = false;
+        options.Password.RequireDigit = false;
+        options.Password.RequiredLength = 6;
+        options.Password.RequireUppercase = true;
+        options.SignIn.RequireConfirmedAccount = false;
     })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+
     
 builder.Services.AddHttpClient<WeatherService>(c => c.Timeout = TimeSpan.FromSeconds(10));
 
 builder.Services.AddHttpClient<IWeatherService, WeatherService>(c => c.Timeout = TimeSpan.FromSeconds(10));
 
-    
+//Cookie Authentication für sessionbasiertes Login
+builder.Services.ConfigureApplicationCookie(options =>
+{
+options.LoginPath = "/Account/Login";
+options.Cookie.HttpOnly = true;
+options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+options.SlidingExpiration = true;
+});
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -55,14 +71,9 @@ app.UseCors(builder =>
 
 app.UseRouting();
 
+app.UseAuthentication(); 
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
-app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
+app.MapControllers();
 
 app.Run();
