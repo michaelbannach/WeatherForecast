@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WeatherForecast.Data;
 using WeatherForecast.Models;
-using WeatherForecast.Data;
+using WeatherForecast.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +25,10 @@ builder.Services
     })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
-        
+    
+builder.Services.AddHttpClient<WeatherService>(c => c.Timeout = TimeSpan.FromSeconds(10));
+
+builder.Services.AddHttpClient<WeatherService>(c => c.Timeout = TimeSpan.FromSeconds(10));
 
     
 
