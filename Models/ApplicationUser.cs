@@ -13,5 +13,5 @@ public class ApplicationUser : IdentityUser
     
     public bool IsSuperUser { get; set; }
     
-    public ICollection<UserInput> UserInputs { get; set; }
+    public ICollection<Favorite> Favorites { get; set; }
 }

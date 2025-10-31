@@ -130,3 +130,5 @@ C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast\obj\Debug\net9.0\re
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast\obj\Debug\net9.0\WeatherForecast.pdb
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast\obj\Debug\net9.0\WeatherForecast.genruntimeconfig.cache
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast\obj\Debug\net9.0\ref\WeatherForecast.dll
+C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast\bin\Debug\net9.0\WeatherForecast-React\package-lock.json
+C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast\bin\Debug\net9.0\WeatherForecast-React\package.json

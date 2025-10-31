@@ -22,7 +22,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("favorites")]
-    public async Task<ActionResult<List<UserInput>>> GetFavorites()
+    public async Task<ActionResult<List<Favorite>>> GetFavorites()
     {
         var user = await _userManager.GetUserAsync(User);
         if(user == null) return Unauthorized();

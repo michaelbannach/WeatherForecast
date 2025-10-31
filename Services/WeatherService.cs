@@ -6,7 +6,7 @@ using WeatherForecast.Interfaces;
 
 namespace WeatherForecast.Services;
 
-public sealed class WeatherService : IWeatherService
+public class WeatherService : IWeatherService
 
 {
     private readonly ILogger<WeatherService> _logger;
@@ -41,6 +41,7 @@ public sealed class WeatherService : IWeatherService
     {
         _logger.LogInformation("Starte Wetterabfrage für Stadt '{City}', Land '{Country}'", city, country);
 
+        // Validierung der Eingabe,wenn nicht Normalisierungsregeln entspricht dann error
         if (!Validate(city, country, out var c, out var co, out var error))
         {
             _logger.LogWarning("Validierungsfehler: {Error}", error);
@@ -63,7 +64,7 @@ public sealed class WeatherService : IWeatherService
         return(data, apiError);
         
     }
-
+    //Hier wird der Input Stadt und Land validiert und normalisiert
     private static bool Validate(string city, string country, out string c, out string co, out string? error)
     {
         c = (city ?? "").Trim();

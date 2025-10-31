@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WeatherForecast.Models;
 
-public class UserInput
+public class Favorite
 {
     public int Id { get; set; }
     

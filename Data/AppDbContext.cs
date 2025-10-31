@@ -10,13 +10,13 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
     }
 
-    public DbSet<UserInput> UserInputs => Set<UserInput>();
+    public DbSet<Favorite> UserInputs => Set<Favorite>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<UserInput>(e =>
+        builder.Entity<Favorite>(e =>
         {
             e.HasKey(x => x.Id);
 
@@ -26,13 +26,13 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
 
             e.Property(x => x.Country)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(2);
 
             e.Property(x => x.UserId)
                 .IsRequired();
 
             e.HasOne(x => x.ApplicationUser)
-                .WithMany(u => u.UserInputs)
+                .WithMany(u => u.Favorites)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
