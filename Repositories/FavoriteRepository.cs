@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using WeatherForecast.Data;
+using WeatherForecast.Interfaces;
 using WeatherForecast.Models;
 
 namespace WeatherForecast.Repositories;
 
-public class FavoriteRepository
+public class FavoriteRepository : IFavoriteRepository
 {
     private readonly AppDbContext _appDbContext;
 

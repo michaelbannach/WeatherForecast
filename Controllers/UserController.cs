@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WeatherForecast.Data;
+using WeatherForecast.Interfaces;
 using WeatherForecast.Models;
 
 namespace WeatherForecast.Controllers;
@@ -12,28 +13,21 @@ namespace WeatherForecast.Controllers;
 [Authorize]
 public class UserController : ControllerBase
 {
-    private readonly AppDbContext _db;
-    private readonly UserManager<ApplicationUser> _userManager;
+   private readonly IUserService _userService;
 
-    public UserController(AppDbContext db, UserManager<ApplicationUser> userManager)
+    public UserController(IUserService userService)
     {
-        _db = db;
-        _userManager = userManager;
+        _userService = userService;
     }
 
-    [HttpGet("favorites")]
-    public async Task<ActionResult<List<Favorite>>> GetFavorites()
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> GetUserById(string userId)
     {
-        var user = await _userManager.GetUserAsync(User);
-        if(user == null) return Unauthorized();
+        var user = await _userService.GetUserByIdAsync(userId);
+        if (user == null)
+            return NotFound();
 
-        var favorites = await _db.Favorites
-            .Where(x => x.UserId == user.Id)
-            .OrderBy(x => x.Id)
-            .Take(5)
-            .ToListAsync();
-        
-        return Ok(favorites);
+        return Ok(user);
     }
     
 }

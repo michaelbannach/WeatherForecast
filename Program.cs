@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WeatherForecast.Data;
 using WeatherForecast.Interfaces;
 using WeatherForecast.Models;
+using WeatherForecast.Repositories;
 using WeatherForecast.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,8 +35,10 @@ builder.Services
 
 
     
-builder.Services.AddHttpClient<WeatherService>(c => c.Timeout = TimeSpan.FromSeconds(10));
 
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 builder.Services.AddHttpClient<IWeatherService, WeatherService>(c => c.Timeout = TimeSpan.FromSeconds(10));
 
 //Cookie Authentication für sessionbasiertes Login

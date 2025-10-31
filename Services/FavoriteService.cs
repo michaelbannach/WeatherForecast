@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using WeatherForecast.Interfaces;
 using WeatherForecast.Models;
 
@@ -7,11 +6,13 @@ namespace WeatherForecast.Services;
 public class FavoriteService : IFavoriteService
 {
     private readonly IFavoriteRepository _favoriteRepository;
+    private readonly IUserService _userService;
     private readonly ILogger<FavoriteService> _logger;
 
     public FavoriteService(IFavoriteRepository favoriteRepository, ILogger<FavoriteService> logger)
     {
         _favoriteRepository = favoriteRepository;
+        _userService = _userService;
         _logger = logger;
     }
 
@@ -35,6 +36,12 @@ public class FavoriteService : IFavoriteService
 
     public async Task<(bool added, string? error)> AddFavoriteAsync(string userId, Favorite favorite)
     {
+        if (!await _userService.IsSuperUserAsync(userId))
+        {
+            _logger.LogWarning("User {UserId} ist kein Superuser", userId);
+            return (false, "Keine Berechtigung zum Speichern");
+        }
+        
         if (string.IsNullOrWhiteSpace(userId))
         {
             _logger.LogWarning("AddFavoriteAsync: unbekannter Benutzer");
