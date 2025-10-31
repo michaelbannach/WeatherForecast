@@ -1,6 +1,16 @@
+using WeatherForecast.Models;
+
+
 namespace WeatherForecast.Interfaces;
 
-public class IFavoriteRepository
+public interface IFavoriteRepository
 {
+    Task<List<Favorite>> GetFavoritesAsync(string userId);
+    Task <bool> AddAsync(Favorite favorite);
     
+    Task<bool>DeleteByIdAsync(string userId, int id);
+    
+    Task<int>CountFavoritesAsync(string userId);
+
+    Task<bool> AllreadyExistAsync(string userId, string city, string country);
 }

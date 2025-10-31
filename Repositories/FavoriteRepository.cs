@@ -35,4 +35,13 @@ public class FavoriteRepository
       var changes = await _appDbContext.SaveChangesAsync();
       return changes > 0;
     }
+    
+    public Task<int> CountFavoritesAsync(string userId)
+    {
+        return  _appDbContext.Favorites
+            .CountAsync(f => f.UserId == userId);
+    }
+    
+    public Task<bool>AllreadyExistAsync(string userId, string city,  string country) =>
+    _appDbContext.Favorites.AnyAsync(f => f.UserId == userId && f.City == city && f.Country == country);
 }
