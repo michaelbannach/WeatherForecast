@@ -27,7 +27,7 @@ public class UserController : ControllerBase
         var user = await _userManager.GetUserAsync(User);
         if(user == null) return Unauthorized();
 
-        var favorites = await _db.UserInputs
+        var favorites = await _db.Favorites
             .Where(x => x.UserId == user.Id)
             .OrderBy(x => x.Id)
             .Take(5)
