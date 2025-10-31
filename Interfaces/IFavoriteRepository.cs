@@ -6,7 +6,7 @@ namespace WeatherForecast.Interfaces;
 public interface IFavoriteRepository
 {
     Task<List<Favorite>> GetFavoritesAsync(string userId);
-    Task <bool> AddAsync(Favorite favorite);
+    Task <bool> AddFavoriteAsync(Favorite favorite);
     
     Task<bool>DeleteByIdAsync(string userId, int id);
     

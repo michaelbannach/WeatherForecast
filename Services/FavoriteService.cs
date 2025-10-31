@@ -1,44 +1,90 @@
+using Microsoft.Extensions.Logging;
 using WeatherForecast.Interfaces;
 using WeatherForecast.Models;
 
 namespace WeatherForecast.Services;
 
-public class FavoriteService 
+public class FavoriteService : IFavoriteService
 {
-   private readonly IFavoriteRepository _favoriteRepository;
+    private readonly IFavoriteRepository _favoriteRepository;
+    private readonly ILogger<FavoriteService> _logger;
 
-   public FavoriteService(IFavoriteRepository favoriteRepository) =>
-   
-      _favoriteRepository = favoriteRepository;
-   
-   //Methoden um Input zu normalisieren für konsistentes Format
-   private static string NormCity(string s) => (s ?? "").Trim();
-   private static string NormCountry(string s) => (s ?? "").Trim().ToUpper();
-   
-   public Task<List<Favorite>> GetFavoritesAsync(string userId) => 
-      _favoriteRepository.GetFavoritesAsync(userId);
+    public FavoriteService(IFavoriteRepository favoriteRepository, ILogger<FavoriteService> logger)
+    {
+        _favoriteRepository = favoriteRepository;
+        _logger = logger;
+    }
 
-   public async Task<(bool added, string? error)> AddFavoriteAsync(string userId, Favorite favorite)
-   {
-      if (string.IsNullOrWhiteSpace(userId))
-         return (false, "Unbekannter Benutzer");
-      
-      var city = NormCity(favorite.City);
-      var country = NormCountry(favorite.Country);
-      
-      if(string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(country))
-         return (false, "Stadt und Land dürfen nicht leer sein");
+    private static string NormCity(string s) => (s ?? "").Trim();
+    private static string NormCountry(string s) => (s ?? "").Trim().ToUpper();
 
-      var count = await _favoriteRepository.CountFavoritesAsync(userId);
+    public async Task<List<Favorite>> GetFavoritesAsync(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            _logger.LogWarning("GetFavoritesAsync wurde mit leerer UserId aufgerufen");
+            throw new ArgumentException("UserId darf nicht leer sein");
+        }
 
-      if (count >= 5)
-         return (false, "Maximal 5 erlaubt");
+        _logger.LogInformation("Lade Favoriten für User {UserId}", userId);
+        var favorites = await _favoriteRepository.GetFavoritesAsync(userId);
+        _logger.LogInformation("{Count} Favoriten für User {UserId} geladen", favorites.Count, userId);
 
-      var exists = await _favoriteRepository.AllreadyExistAsync(userId, city, country);
-      if(exists)
-         return (false, "Diese Stadt ist bereits gespeichert");
-      
-      var ok = await _favoriteRepository.AddAsync((new Favorite { UserId = userId,City = city, Country = country }));
-      return (ok, ok ? null : "Speichern nicht möglich");
-   }
+        return favorites;
+    }
+
+    public async Task<(bool added, string? error)> AddFavoriteAsync(string userId, Favorite favorite)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            _logger.LogWarning("AddFavoriteAsync: unbekannter Benutzer");
+            return (false, "Unbekannter Benutzer");
+        }
+
+        var city = NormCity(favorite.City);
+        var country = NormCountry(favorite.Country);
+        if (string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(country))
+        {
+            _logger.LogWarning("AddFavoriteAsync: Stadt oder Land leer - City: '{City}', Country: '{Country}'", city, country);
+            return (false, "Stadt und Land dürfen nicht leer sein");
+        }
+
+        var count = await _favoriteRepository.CountFavoritesAsync(userId);
+        if (count >= 5)
+        {
+            _logger.LogInformation("AddFavoriteAsync: Maximal 5 Favoriten für User {UserId} erreicht", userId);
+            return (false, "Maximal 5 erlaubt");
+        }
+
+        var exists = await _favoriteRepository.AllreadyExistAsync(userId, city, country);
+        if (exists)
+        {
+            _logger.LogInformation("AddFavoriteAsync: Favorit existiert bereits für User {UserId} - {City}, {Country}", userId, city, country);
+            return (false, "Diese Stadt ist bereits gespeichert");
+        }
+
+        _logger.LogInformation("Füge Favorit hinzu: User {UserId}, Stadt {City}, Land {Country}", userId, city, country);
+
+        var ok = await _favoriteRepository.AddFavoriteAsync(new Favorite { UserId = userId, City = city, Country = country });
+        if (!ok)
+            _logger.LogError("AddFavoriteAsync: Fehler beim Speichern des Favoriten für User {UserId}", userId);
+
+        return (ok, ok ? null : "Speichern nicht möglich");
+    }
+
+    public async Task<bool> DeleteByIdAsync(string userId, int id)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            _logger.LogWarning("DeleteByIdAsync mit leerer UserId aufgerufen");
+            throw new ArgumentException("UserId darf nicht leer sein");
+        }
+
+        _logger.LogInformation("Lösche Favorit mit Id {FavoriteId} für User {UserId}", id, userId);
+        var deleted = await _favoriteRepository.DeleteByIdAsync(userId, id);
+        if (!deleted)
+            _logger.LogWarning("DeleteByIdAsync: Favorit mit Id {FavoriteId} für User {UserId} nicht gefunden oder konnte nicht gelöscht werden", id, userId);
+
+        return deleted;
+    }
 }

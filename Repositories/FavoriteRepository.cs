@@ -17,7 +17,7 @@ public class FavoriteRepository
             .ToListAsync();
 
 
-    public async Task<bool> AddAsync(Favorite favorite)
+    public async Task<bool> AddFavoriteAsync(Favorite favorite)
     {
         _appDbContext.Favorites.Add(favorite);
         return await _appDbContext.SaveChangesAsync() > 0;
