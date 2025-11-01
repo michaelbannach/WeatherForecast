@@ -10,27 +10,34 @@ public class WeatherService : IWeatherService
 
 {
     private readonly ILogger<WeatherService> _logger;
-    //HttpClient-Instanz -> HTTP-Anfragen an externe API
+    //HttpClient-Instance -> HTTP-Request to extern API
     private readonly HttpClient _http;
 
-    //In dieser Variable wird der API-Key gespeichert
+   
     private readonly string _apiKey;
 
     //Dadurch wird API-Antwort CaseInsensitiv
     private static readonly JsonSerializerOptions JsonOpt = new() { PropertyNameCaseInsensitive = true };
 
-    //Hilfsklasse um Fehlerantworten der OpenWeatherMap API abzubilden
+    //Helper to show errormessages from OpenWeatherMap API
     private sealed class OwmError
     {
         public string? Code { get; set; }
         public string? Message { get; set; }
     }
     
+    // IConfiguration is injected by ASP.NET Core and contains values from the appsettings files.
     public WeatherService(HttpClient http, IConfiguration config, ILogger<WeatherService> logger)
     {
         _http = http;
         _logger = logger;
-        _http.BaseAddress = new Uri("https://api.openweathermap.org/data/2.5/");
+        
+        //WeatherMapUrl from Variable --> No Hardcoding
+        var baseUrl = config["OpenWeatherMap:BaseUrl"]
+        ?? throw new InvalidOperationException("OpenWeatherMap:BaseUrl is required");
+        
+        _http.BaseAddress = new Uri(baseUrl.Trim());
+        
         _apiKey = (config["OpenWeatherMap:ApiKey"] ??
             throw new InvalidOperationException("OpenWeatherMap:ApiKey is required")).Trim();
 
@@ -41,7 +48,7 @@ public class WeatherService : IWeatherService
     {
         _logger.LogInformation("Starte Wetterabfrage für Stadt '{City}', Land '{Country}'", city, country);
 
-        // Validierung der Eingabe,wenn nicht Normalisierungsregeln entspricht dann error
+        //Validation of Input
         if (!Validate(city, country, out var c, out var co, out var error))
         {
             _logger.LogWarning("Validierungsfehler: {Error}", error);
@@ -64,7 +71,7 @@ public class WeatherService : IWeatherService
         return(data, apiError);
         
     }
-    //Hier wird der Input Stadt und Land validiert und normalisiert
+   
     private static bool Validate(string city, string country, out string c, out string co, out string? error)
     {
         c = (city ?? "").Trim();

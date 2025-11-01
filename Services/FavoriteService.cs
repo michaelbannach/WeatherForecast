@@ -9,7 +9,7 @@ public class FavoriteService : IFavoriteService
     private readonly IUserService _userService;
     private readonly ILogger<FavoriteService> _logger;
 
-    public FavoriteService(IFavoriteRepository favoriteRepository, ILogger<FavoriteService> logger)
+    public FavoriteService(IFavoriteRepository favoriteRepository,IUserService userService, ILogger<FavoriteService> logger)
     {
         _favoriteRepository = favoriteRepository;
         _userService = _userService;
@@ -56,6 +56,13 @@ public class FavoriteService : IFavoriteService
             return (false, "Stadt und Land dürfen nicht leer sein");
         }
 
+        var exists = await _favoriteRepository.AllreadyExistsAsync(userId, city, country);
+        if (exists)
+        {
+            _logger.LogInformation("AddFavoriteAsync: Favorit existiert bereits für User {UserId} - {City}, {Country}", userId, city, country);
+            return (false, "Diese Stadt ist bereits gespeichert");
+        }
+        
         var count = await _favoriteRepository.CountFavoritesAsync(userId);
         if (count >= 5)
         {
@@ -63,12 +70,7 @@ public class FavoriteService : IFavoriteService
             return (false, "Maximal 5 erlaubt");
         }
 
-        var exists = await _favoriteRepository.AllreadyExistAsync(userId, city, country);
-        if (exists)
-        {
-            _logger.LogInformation("AddFavoriteAsync: Favorit existiert bereits für User {UserId} - {City}, {Country}", userId, city, country);
-            return (false, "Diese Stadt ist bereits gespeichert");
-        }
+ 
 
         _logger.LogInformation("Füge Favorit hinzu: User {UserId}, Stadt {City}, Land {Country}", userId, city, country);
 
@@ -79,6 +81,7 @@ public class FavoriteService : IFavoriteService
         return (ok, ok ? null : "Speichern nicht möglich");
     }
 
+    
     public async Task<bool> DeleteByIdAsync(string userId, int id)
     {
         if (string.IsNullOrWhiteSpace(userId))

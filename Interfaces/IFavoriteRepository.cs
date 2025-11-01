@@ -12,5 +12,5 @@ public interface IFavoriteRepository
     
     Task<int>CountFavoritesAsync(string userId);
 
-    Task<bool> AllreadyExistAsync(string userId, string city, string country);
+    Task<bool> AllreadyExistsAsync(string userId, string city, string country);
 }

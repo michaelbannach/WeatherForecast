@@ -14,9 +14,8 @@ public class FavoriteRepository : IFavoriteRepository
         _appDbContext.Favorites
             .Where(x => x.UserId == userId)
             .OrderBy(x => x.Id)
-            .Take(5)
             .ToListAsync();
-
+//Hier keine Logik wie Take(5) --> gehört ausschließlich in den Service
 
     public async Task<bool> AddFavoriteAsync(Favorite favorite)
     {
@@ -43,6 +42,6 @@ public class FavoriteRepository : IFavoriteRepository
             .CountAsync(f => f.UserId == userId);
     }
     
-    public Task<bool>AllreadyExistAsync(string userId, string city,  string country) =>
+    public Task<bool>AllreadyExistsAsync(string userId, string city,  string country) =>
     _appDbContext.Favorites.AnyAsync(f => f.UserId == userId && f.City == city && f.Country == country);
 }
