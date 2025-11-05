@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using WeatherForecast.Interfaces;
-using WeatherForecast.Dtos;
+using WeatherForecast.Application.Interfaces;
 
-namespace WeatherForecast.Controllers;
+
+namespace WeatherForecast.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

@@ -1,7 +1,10 @@
-using WeatherForecast.Interfaces;
-using WeatherForecast.Models;
+using WeatherForecast.Application.Interfaces;
+using WeatherForecast.Domain.Models;
+using WeatherForecast.Application.Dtos;
+using WeatherForecast.Application.Mapping;
+using WeatherForecast.Domain.Interfaces;
 
-namespace WeatherForecast.Infrastructure.Services;
+namespace WeatherForecast.Application.Services;
 
 public class FavoriteService : IFavoriteService
 {
@@ -12,14 +15,14 @@ public class FavoriteService : IFavoriteService
     public FavoriteService(IFavoriteRepository favoriteRepository,IUserService userService, ILogger<FavoriteService> logger)
     {
         _favoriteRepository = favoriteRepository;
-        _userService = _userService;
+        _userService = userService;
         _logger = logger;
     }
 
     private static string NormCity(string s) => (s ?? "").Trim();
     private static string NormCountry(string s) => (s ?? "").Trim().ToUpper();
 
-    public async Task<List<Favorite>> GetFavoritesAsync(string userId)
+    public async Task<List<FavoriteDto>> GetFavoritesAsync(string userId)
     {
         if (string.IsNullOrWhiteSpace(userId))
         {
@@ -31,10 +34,10 @@ public class FavoriteService : IFavoriteService
         var favorites = await _favoriteRepository.GetFavoritesAsync(userId);
         _logger.LogInformation("{Count} Favoriten für User {UserId} geladen", favorites.Count, userId);
 
-        return favorites;
+        return favorites.Select(EntityToDtoMapper.ToDto).ToList();
     }
 
-    public async Task<(bool added, string? error)> AddFavoriteAsync(string userId, Favorite favorite)
+    public async Task<(bool added, string? error)> AddFavoriteAsync(string userId, FavoriteDto favoriteDto)
     {
         if (!await _userService.IsSuperUserAsync(userId))
         {
@@ -48,8 +51,8 @@ public class FavoriteService : IFavoriteService
             return (false, "Unbekannter Benutzer");
         }
 
-        var city = NormCity(favorite.City);
-        var country = NormCountry(favorite.Country);
+        var city = NormCity(favoriteDto.City);
+        var country = NormCountry(favoriteDto.Country);
         if (string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(country))
         {
             _logger.LogWarning("AddFavoriteAsync: Stadt oder Land leer - City: '{City}', Country: '{Country}'", city, country);
@@ -82,19 +85,28 @@ public class FavoriteService : IFavoriteService
     }
 
     
-    public async Task<bool> DeleteByIdAsync(string userId, int id)
+    public async Task<(bool deleted, string? error)> DeleteByIdAsync(string userId, int id)
     {
         if (string.IsNullOrWhiteSpace(userId))
         {
             _logger.LogWarning("DeleteByIdAsync mit leerer UserId aufgerufen");
-            throw new ArgumentException("UserId darf nicht leer sein");
+            return (false, "User darf nciht leer sein");
         }
 
         _logger.LogInformation("Lösche Favorit mit Id {FavoriteId} für User {UserId}", id, userId);
+       
         var deleted = await _favoriteRepository.DeleteByIdAsync(userId, id);
-        if (!deleted)
-            _logger.LogWarning("DeleteByIdAsync: Favorit mit Id {FavoriteId} für User {UserId} nicht gefunden oder konnte nicht gelöscht werden", id, userId);
 
-        return deleted;
+        if (!deleted)
+        {
+            
+            var message = $"Favorit mit Id {id} für User {userId} wurde nicht gefunden oder konnte nicht gelöscht werden.";
+            _logger.LogWarning("DeleteByIdAsync: {Message}", message);
+            return (false, message);
+        }
+            
+
+        _logger.LogInformation("Favorit mit Id {FavoriteId} erfolgreich gelöscht.", id);
+        return (true, null);
     }
 }

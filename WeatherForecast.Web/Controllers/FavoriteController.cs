@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WeatherForecast.Interfaces;
-using WeatherForecast.Models;
+using WeatherForecast.Application.Interfaces;
+using WeatherForecast.Application.Dtos;
 
 namespace WeatherForecast.Web.Controllers;
 
@@ -39,14 +39,15 @@ public class FavoriteController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> AddFavoriteAsync([FromBody] Favorite favorite)
+    public async Task<IActionResult> AddFavoriteAsync([FromBody] FavoriteDto favoriteDto)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if(userId == null)
+            
             return Unauthorized();
         try
         {
-            await _favoriteService.AddFavoriteAsync(userId, favorite);
+            await _favoriteService.AddFavoriteAsync(userId, favoriteDto);
             return Ok();
         }
 
@@ -64,17 +65,14 @@ public class FavoriteController : ControllerBase
         if(userId == null)
             return Unauthorized();
 
-        try
-        {
-            await _favoriteService.DeleteByIdAsync(userId, favoriteId);
-            return Ok();
+        var (deleted,error) = await _favoriteService.DeleteByIdAsync(userId, favoriteId);
 
-        }
-        catch (ArgumentException ex)
+        if (!deleted)
         {
-            return BadRequest(new { message = ex.Message });
+            return NotFound(new {message = error ?? "Favorit nicht gefunden." });
         }
-       
+        
+        return Ok(new {message = "Favorit gelöscht"});
     }
 
 }

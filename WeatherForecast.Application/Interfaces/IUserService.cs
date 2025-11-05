@@ -1,6 +1,6 @@
-using WeatherForecast.Models;
+using WeatherForecast.Domain.Models;
 
-namespace WeatherForecast.Interfaces;
+namespace WeatherForecast.Application.Interfaces;
 
 public interface IUserService
 {

@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using WeatherForecast.Data;
-using WeatherForecast.Interfaces;
-using WeatherForecast.Models;
+using WeatherForecast.Infrastructure.Data;
+using WeatherForecast.Domain.Interfaces;
+using WeatherForecast.Domain.Models;
 
-namespace WeatherForecast.Repositories;
+namespace WeatherForecast.Infrastructure.Repositories;
 
 public class FavoriteRepository : IFavoriteRepository
 {

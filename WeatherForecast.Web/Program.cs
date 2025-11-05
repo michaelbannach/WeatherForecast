@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using WeatherForecast.Data;
-using WeatherForecast.Interfaces;
-using WeatherForecast.Models;
-using WeatherForecast.Repositories;
+using WeatherForecast.Infrastructure.Data;
+using WeatherForecast.Application.Interfaces;
+using WeatherForecast.Domain.Models;
+using WeatherForecast.Domain.Interfaces;
+using WeatherForecast.Infrastructure.Repositories;
 using WeatherForecast.Infrastructure.Services;
+using WeatherForecast.Application.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,7 +64,7 @@ using (var scope = app.Services.CreateScope())
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-    string[] roles = { "Superuser", "User" };
+    string[] roles = { "SuperUser", "User" };
 
     foreach (var role in roles)
     {

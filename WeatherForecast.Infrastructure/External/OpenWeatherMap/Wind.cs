@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace WeatherForecast.Dtos;
+namespace WeatherForecast.Infrastructure.External.OpenWeatherMap;
 
 public class Wind
 {

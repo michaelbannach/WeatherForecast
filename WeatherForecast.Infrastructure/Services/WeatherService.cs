@@ -1,7 +1,8 @@
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
-using WeatherForecast.Dtos;
-using WeatherForecast.Interfaces;
+
+using WeatherForecast.Application.Dtos;
+using WeatherForecast.Application.Interfaces;
+using WeatherForecast.Infrastructure.External.OpenWeatherMap;
 
 
 namespace WeatherForecast.Infrastructure.Services;
@@ -44,7 +45,7 @@ public class WeatherService : IWeatherService
         _logger.LogInformation("WeatherService initialisiert. BaseUrl: {BaseUrl}", _http.BaseAddress);
     }
 
-    public async Task<(CompleteWeatherResponse? data, string? error)> GetWeatherAsync(string city, string country)
+    public async Task<(WeatherDto? data, string? error)> GetWeatherAsync(string city, string country)
     {
         _logger.LogInformation("Starte Wetterabfrage für Stadt '{City}', Land '{Country}'", city, country);
 
@@ -59,16 +60,25 @@ public class WeatherService : IWeatherService
         
         _logger.LogInformation("Rufe OpenWeatherMap-API auf: {Url}", url);
 
-        var (data, apiError) = await GetJsonAsync<CompleteWeatherResponse>(url);
+        var (owm, apiError) = await GetJsonAsync<CompleteWeatherResponse>(url);
 
         if (apiError != null)
+        {
             _logger.LogWarning("API-Fehler: {ApiError}", apiError);
+            return (null, apiError);
+        }
 
-        if (data != null)
-            _logger.LogInformation("Wetterdaten erfolgreich geladen: {Data}", data);
+        if (owm == null)
+        {
+            _logger.LogWarning("Keine Wetterdaten empfangen");
+            return(null,"Keine Wetterdaten empfangen");
+        }
 
+        var dto = owm.ToAppDto(city, country);
         
-        return(data, apiError);
+        _logger.LogInformation("Wetterdaten erfolgreich gemappt für {City},{Country}", city, country);
+      
+        return(dto, null);
         
     }
    

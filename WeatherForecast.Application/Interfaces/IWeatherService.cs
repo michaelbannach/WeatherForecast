@@ -1,9 +1,9 @@
 
-using WeatherForecast.Dtos;
+using WeatherForecast.Application.Dtos;
 
-namespace WeatherForecast.Interfaces;
+namespace WeatherForecast.Application.Interfaces;
 
 public interface IWeatherService
 {
-    Task<(CompleteWeatherResponse? data, string? error)> GetWeatherAsync(string city, string country);
+    Task<(WeatherDto? data, string? error)> GetWeatherAsync(string city, string country);
 }

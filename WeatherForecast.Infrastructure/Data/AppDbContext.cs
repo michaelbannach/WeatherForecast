@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using WeatherForecast.Models;
+using WeatherForecast.Domain.Models;
 
-namespace WeatherForecast.Data;
+namespace WeatherForecast.Infrastructure.Data;
 
 public class AppDbContext : IdentityDbContext<ApplicationUser>
 {

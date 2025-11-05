@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using WeatherForecast.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WeatherForecast.Data;
-using WeatherForecast.Interfaces;
-using WeatherForecast.Models;
 
-namespace WeatherForecast.Controllers;
+
+namespace WeatherForecast.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

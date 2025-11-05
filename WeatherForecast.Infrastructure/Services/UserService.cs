@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
-using WeatherForecast.Interfaces;
-using WeatherForecast.Models;
+using WeatherForecast.Application.Interfaces;
+using WeatherForecast.Domain.Models;
 
 namespace WeatherForecast.Infrastructure.Services;
 
