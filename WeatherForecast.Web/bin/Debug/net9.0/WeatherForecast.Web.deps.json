@@ -13,6 +13,7 @@
           "Microsoft.EntityFrameworkCore.Tools": "9.0.10",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "9.0.0",
           "WeatherForecast.Application": "1.0.0",
+          "WeatherForecast.Domain": "1.0.0",
           "WeatherForecast.Infrastructure": "1.0.0"
         },
         "runtime": {

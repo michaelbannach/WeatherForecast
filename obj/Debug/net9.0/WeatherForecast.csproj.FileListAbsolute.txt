@@ -143,3 +143,5 @@ C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.so
 C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.dll
 C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\refint\WeatherForecast.dll
 C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.pdb
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.RazorAssemblyInfo.cache
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.RazorAssemblyInfo.cs

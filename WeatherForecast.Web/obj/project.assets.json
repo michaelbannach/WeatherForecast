@@ -6755,6 +6755,7 @@
       "Microsoft.EntityFrameworkCore.Tools >= 9.0.10",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 9.0.0",
       "WeatherForecast.Application >= 1.0.0",
+      "WeatherForecast.Domain >= 1.0.0",
       "WeatherForecast.Infrastructure >= 1.0.0"
     ]
   },
@@ -6792,6 +6793,9 @@
           "projectReferences": {
             "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.Application\\WeatherForecast.Application.csproj": {
               "projectPath": "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.Application\\WeatherForecast.Application.csproj"
+            },
+            "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.Domain\\WeatherForecast.Domain.csproj": {
+              "projectPath": "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.Domain\\WeatherForecast.Domain.csproj"
             },
             "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.Infrastructure\\WeatherForecast.Infrastructure.csproj": {
               "projectPath": "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.Infrastructure\\WeatherForecast.Infrastructure.csproj"

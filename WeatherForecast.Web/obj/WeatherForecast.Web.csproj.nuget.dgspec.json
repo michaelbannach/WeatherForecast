@@ -272,6 +272,9 @@
               "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.Application\\WeatherForecast.Application.csproj": {
                 "projectPath": "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.Application\\WeatherForecast.Application.csproj"
               },
+              "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.Domain\\WeatherForecast.Domain.csproj": {
+                "projectPath": "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.Domain\\WeatherForecast.Domain.csproj"
+              },
               "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.Infrastructure\\WeatherForecast.Infrastructure.csproj": {
                 "projectPath": "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.Infrastructure\\WeatherForecast.Infrastructure.csproj"
               }

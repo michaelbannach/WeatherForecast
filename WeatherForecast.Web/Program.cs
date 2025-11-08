@@ -10,6 +10,7 @@ using WeatherForecast.Application.Services;
 
 
 
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 
@@ -34,8 +35,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         new MySqlServerVersion(new Version(8, 0, 21))
     )
 );
-
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDbContext>();
 
 // Identity mit Rollenverwaltung und Passwortrichtlinien
 builder.Services
@@ -66,8 +65,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
-builder.Services.AddControllers();
 
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -104,8 +103,7 @@ using (var scope = app.Services.CreateScope())
 
     app.UseAuthentication();
     app.UseAuthorization();
-
-    app.MapRazorPages();
+    
     app.MapControllers();
 
     app.Run();
