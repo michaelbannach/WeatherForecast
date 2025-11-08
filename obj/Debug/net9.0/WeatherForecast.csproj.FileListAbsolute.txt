@@ -132,3 +132,14 @@ C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast\obj\Debug\net9.0\We
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast\obj\Debug\net9.0\ref\WeatherForecast.dll
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast\bin\Debug\net9.0\WeatherForecast-React\package-lock.json
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast\bin\Debug\net9.0\WeatherForecast-React\package.json
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.csproj.AssemblyReference.cache
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\rpswa.dswa.cache.json
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.AssemblyInfoInputs.cache
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.AssemblyInfo.cs
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.csproj.CoreCompileInputs.cache
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.sourcelink.json
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.dll
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\refint\WeatherForecast.dll
+C:\Users\micha\RiderProjects\WeatherForecast\obj\Debug\net9.0\WeatherForecast.pdb

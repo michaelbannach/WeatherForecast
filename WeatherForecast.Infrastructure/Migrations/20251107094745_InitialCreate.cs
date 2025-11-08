@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace WeatherForecast.Migrations
+namespace WeatherForecast.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -44,7 +44,6 @@ namespace WeatherForecast.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LastName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsSuperUser = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
@@ -202,23 +201,23 @@ namespace WeatherForecast.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "UserInputs",
+                name: "Favorites",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     City = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Country = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    Country = table.Column<string>(type: "varchar(2)", maxLength: 2, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserInputs", x => x.Id);
+                    table.PrimaryKey("PK_Favorites", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserInputs_AspNetUsers_UserId",
+                        name: "FK_Favorites_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -264,8 +263,8 @@ namespace WeatherForecast.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserInputs_UserId",
-                table: "UserInputs",
+                name: "IX_Favorites_UserId",
+                table: "Favorites",
                 column: "UserId");
         }
 
@@ -288,7 +287,7 @@ namespace WeatherForecast.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "UserInputs");
+                name: "Favorites");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -19,8 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         new MySqlServerVersion(new Version(8, 0, 21))
-    )
-);
+    ));
 
 // Identity mit Rollenverwaltung und Passwortrichtlinien
 builder.Services
@@ -55,13 +54,13 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Rollen sicherstellen und Superuser zuweisen
+// Async Rollen sicherstellen und Superuser zuweisen
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-    string[] roles = { "Superuser", "User" };
+    string[] roles = { "SuperUser", "User" };
 
     foreach (var role in roles)
     {
@@ -70,30 +69,29 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
         }
     }
-
-
+}
 
 // HTTP Request Pipeline konfigurieren
-    if (!app.Environment.IsDevelopment())
-    {
-        app.UseExceptionHandler("/Home/Error");
-        app.UseHsts();
-    }
-
-    app.UseHttpsRedirection();
-
-    app.UseCors(builder =>
-        builder.WithOrigins("http://localhost:5173")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-    );
-
-    app.UseRouting();
-
-    app.UseAuthentication();
-    app.UseAuthorization();
-
-    app.MapControllers();
-
-    app.Run();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
+
+app.UseHttpsRedirection();
+
+app.UseCors(builder =>
+    builder.WithOrigins("http://localhost:5173")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+);
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+// Asynchron App laufen lassen
+await app.RunAsync();

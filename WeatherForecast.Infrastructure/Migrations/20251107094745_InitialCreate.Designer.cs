@@ -9,11 +9,11 @@ using WeatherForecast.Infrastructure.Data;
 
 #nullable disable
 
-namespace WeatherForecast.Migrations
+namespace WeatherForecast.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251031225425_RemovedTheIsSuperUserPropertyFromApplicationUser")]
-    partial class RemovedTheIsSuperUserPropertyFromApplicationUser
+    [Migration("20251107094745_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

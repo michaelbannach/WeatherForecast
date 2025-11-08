@@ -11,6 +11,14 @@ using WeatherForecast.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+        policy.WithOrigins("http://localhost:5173") 
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
+
 // Konfiguration einladen
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -85,11 +93,7 @@ using (var scope = app.Services.CreateScope())
 
     app.UseHttpsRedirection();
 
-    app.UseCors(builder =>
-        builder.WithOrigins("http://localhost:5173")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-    );
+    app.UseCors();
 
     app.UseRouting();
 

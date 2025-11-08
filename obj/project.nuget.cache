@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0F006XMsSA0=",
+  "dgSpecHash": "Z6y4KTRcvEI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast\\WeatherForecast.csproj",
+  "projectFilePath": "C:\\Users\\micha\\RiderProjects\\WeatherForecast\\WeatherForecast.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\micha\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\micha\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.3.0\\microsoft.aspnetcore.authentication.2.3.0.nupkg.sha512",

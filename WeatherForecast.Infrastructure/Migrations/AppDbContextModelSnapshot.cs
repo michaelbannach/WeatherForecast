@@ -8,7 +8,7 @@ using WeatherForecast.Infrastructure.Data;
 
 #nullable disable
 
-namespace WeatherForecast.Migrations
+namespace WeatherForecast.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
