@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap5")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("WeatherForecast.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e7fae302a5e1e75565f5d6c3ded5e7b68bff323f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+98516a33a1658420c8bf7f0bf4c955f585f45bd6")]
 [assembly: System.Reflection.AssemblyProductAttribute("WeatherForecast.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WeatherForecast.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
