@@ -42,6 +42,6 @@ public class FavoriteRepository : IFavoriteRepository
             .CountAsync(f => f.UserId == userId);
     }
     
-    public Task<bool>AllreadyExistsAsync(string userId, string city,  string country) =>
+    public Task<bool>AlreadyExistsAsync(string userId, string city,  string country) =>
     _appDbContext.Favorites.AnyAsync(f => f.UserId == userId && f.City == city && f.Country == country);
 }

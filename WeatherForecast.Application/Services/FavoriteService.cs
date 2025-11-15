@@ -60,7 +60,7 @@ public class FavoriteService : IFavoriteService
             return (false, "Stadt und Land dürfen nicht leer sein");
         }
 
-        var exists = await _favoriteRepository.AllreadyExistsAsync(userId, city, country);
+        var exists = await _favoriteRepository.AlreadyExistsAsync(userId, city, country);
         if (exists)
         {
             _logger.LogInformation("AddFavoriteAsync: Favorit existiert bereits für User {UserId} - {City}, {Country}", userId, city, country);
@@ -93,7 +93,7 @@ public class FavoriteService : IFavoriteService
         if (string.IsNullOrWhiteSpace(userId))
         {
             _logger.LogWarning("DeleteByIdAsync mit leerer UserId aufgerufen");
-            return (false, "User darf nciht leer sein");
+            return (false, "User darf nicht leer sein");
         }
 
         _logger.LogInformation("Lösche Favorit mit Id {FavoriteId} für User {UserId}", id, userId);
