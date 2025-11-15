@@ -16,13 +16,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
         policy
-            .WithOrigins("http://localhost:5173") // dein React/Vite-Frontend
+            .WithOrigins("http://localhost:5173") 
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials());
 });
 
-// Konfiguration lade
+
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)

@@ -37,7 +37,7 @@ namespace WeatherForecast.Web.Controllers;
             var result = await _userManager.CreateAsync(user, dto.Password);
             if(!result.Succeeded) return BadRequest(result.Errors);
 
-            var role = string.IsNullOrEmpty(dto.Role) ? "NormalUser" : dto.Role;
+            var role = string.IsNullOrEmpty(dto.Role) ? "User" : dto.Role;
             if(!await _roleManager.RoleExistsAsync(role)) 
                 await _roleManager.CreateAsync(new IdentityRole(role));
             
