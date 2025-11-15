@@ -1,5 +1,14 @@
+using System;
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 using WeatherForecast.Infrastructure.Data;
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Domain.Models;
@@ -8,27 +17,25 @@ using WeatherForecast.Infrastructure.Repositories;
 using WeatherForecast.Infrastructure.Services;
 using WeatherForecast.Application.Services;
 
-
-
-
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddRazorPages();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-        policy.WithOrigins("http://localhost:5173") 
+    options.AddPolicy("Frontend", policy =>
+        policy
+            .WithOrigins("http://localhost:5173") // dein React/Vite-Frontend
             .AllowAnyHeader()
-            .AllowAnyMethod());
+            .AllowAnyMethod()
+            .AllowCredentials());
 });
 
-// Konfiguration einladen
+// Konfiguration laden
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables();
 
-// Datenbankanbindung MySQL
+// Datenbank (MySQL)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -36,7 +43,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     )
 );
 
-// Identity mit Rollenverwaltung und Passwortrichtlinien
+// Identity
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
@@ -48,15 +55,15 @@ builder.Services
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-// Eigene Services registrieren (Dependency Injection)
+// Eigene Services registrieren
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+builder.Services.AddHttpClient<IWeatherService, WeatherService>(c => 
+    c.Timeout = TimeSpan.FromSeconds(10)
+);
 
-// HttpClient für WeatherService mit Timeout
-builder.Services.AddHttpClient<IWeatherService, WeatherService>(c => c.Timeout = TimeSpan.FromSeconds(10));
-
-// Cookie-basierte Authentifizierung konfigurieren
+// Authentifizierung
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -65,12 +72,11 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
-
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Rollen sicherstellen und Superuser zuweisen
+// Rollen sicherstellen (Scope separat)
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -85,26 +91,21 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
         }
     }
-
-
-
-// HTTP Request Pipeline konfigurieren
-    if (!app.Environment.IsDevelopment())
-    {
-        app.UseExceptionHandler("/Home/Error");
-        app.UseHsts();
-    }
-
-    app.UseHttpsRedirection();
-
-    app.UseCors();
-
-    app.UseRouting();
-
-    app.UseAuthentication();
-    app.UseAuthorization();
-    
-    app.MapControllers();
-
-    app.Run();
 }
+
+// Pipeline
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseCors();
+app.UseRouting();
+app.UseCors("Frontend");
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();

@@ -1,9 +1,8 @@
-C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\bin\Debug\net9.0\WeatherForecast-React\package-lock.json
-C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\bin\Debug\net9.0\WeatherForecast-React\package.json
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\bin\Debug\net9.0\WeatherForecast.Domain.staticwebassets.endpoints.json
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\bin\Debug\net9.0\WeatherForecast.Application.staticwebassets.endpoints.json
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\bin\Debug\net9.0\WeatherForecast.Infrastructure.staticwebassets.endpoints.json
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\bin\Debug\net9.0\WeatherForecast.Infrastructure.deps.json
+C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\bin\Debug\net9.0\WeatherForecast.Infrastructure.runtimeconfig.json
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\bin\Debug\net9.0\WeatherForecast.Infrastructure.dll
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\bin\Debug\net9.0\WeatherForecast.Infrastructure.pdb
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\bin\Debug\net9.0\WeatherForecast.Application.dll
@@ -13,8 +12,6 @@ C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\bin\
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\WeatherForecast.Infrastructure.csproj.AssemblyReference.cache
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\rpswa.dswa.cache.json
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\WeatherForecast.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\WeatherForecast.Infrastructure.AssemblyInfoInputs.cache
-C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\WeatherForecast.Infrastructure.AssemblyInfo.cs
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\WeatherForecast.Infrastructure.csproj.CoreCompileInputs.cache
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\WeatherForecast.Infrastructure.sourcelink.json
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\rjimswa.dswa.cache.json
@@ -29,6 +26,5 @@ C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\WeatherForecast.Infrastructure.dll
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\refint\WeatherForecast.Infrastructure.dll
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\WeatherForecast.Infrastructure.pdb
-C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\ref\WeatherForecast.Infrastructure.dll
-C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\bin\Debug\net9.0\WeatherForecast.Infrastructure.runtimeconfig.json
 C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\WeatherForecast.Infrastructure.genruntimeconfig.cache
+C:\Users\micha\RiderProjects\WeatherForecast\WeatherForecast.Infrastructure\obj\Debug\net9.0\ref\WeatherForecast.Infrastructure.dll

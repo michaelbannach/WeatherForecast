@@ -1,3 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using Microsoft.Extensions.Logging;
+
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Domain.Models;
 using WeatherForecast.Application.Dtos;
@@ -39,20 +46,21 @@ public class FavoriteService : IFavoriteService
 
     public async Task<(bool added, string? error)> AddFavoriteAsync(string userId, FavoriteDto favoriteDto)
     {
-        if (!await _userService.IsSuperUserAsync(userId))
-        {
-            _logger.LogWarning("User {UserId} ist kein Superuser", userId);
-            return (false, "Keine Berechtigung zum Speichern");
-        }
-        
         if (string.IsNullOrWhiteSpace(userId))
         {
             _logger.LogWarning("AddFavoriteAsync: unbekannter Benutzer");
             return (false, "Unbekannter Benutzer");
         }
 
+        if (!await _userService.IsSuperUserAsync(userId))
+        {
+            _logger.LogWarning("User {UserId} ist kein SuperUser", userId);
+            return (false, "Keine Berechtigung zum Speichern");
+        }
+
         var city = NormCity(favoriteDto.City);
         var country = NormCountry(favoriteDto.Country);
+
         if (string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(country))
         {
             _logger.LogWarning("AddFavoriteAsync: Stadt oder Land leer - City: '{City}', Country: '{Country}'", city, country);
@@ -65,7 +73,7 @@ public class FavoriteService : IFavoriteService
             _logger.LogInformation("AddFavoriteAsync: Favorit existiert bereits für User {UserId} - {City}, {Country}", userId, city, country);
             return (false, "Diese Stadt ist bereits gespeichert");
         }
-        
+
         var count = await _favoriteRepository.CountFavoritesAsync(userId);
         if (count >= 5)
         {
@@ -73,17 +81,19 @@ public class FavoriteService : IFavoriteService
             return (false, "Maximal 5 erlaubt");
         }
 
- 
-
         _logger.LogInformation("Füge Favorit hinzu: User {UserId}, Stadt {City}, Land {Country}", userId, city, country);
 
-        var ok = await _favoriteRepository.AddFavoriteAsync(new Favorite { UserId = userId, City = city, Country = country });
+        var ok = await _favoriteRepository.AddFavoriteAsync(
+            new Favorite { UserId = userId, City = city, Country = country });
+
         if (!ok)
+        {
             _logger.LogError("AddFavoriteAsync: Fehler beim Speichern des Favoriten für User {UserId}", userId);
+            return (false, "Speichern nicht möglich");
+        }
 
-        return (ok, ok ? null : "Speichern nicht möglich");
+        return (true, null);
     }
-
     
     public async Task<(bool deleted, string? error)> DeleteByIdAsync(string userId, int id)
     {

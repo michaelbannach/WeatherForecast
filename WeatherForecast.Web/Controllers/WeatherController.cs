@@ -27,4 +27,32 @@ public class WeatherController : ControllerBase
 
       return Ok(data);
    }
+   
+   [HttpGet("forecast/3days/{city}/{country}")]
+   public async Task<IActionResult> GetThreeDayForecast(string city, string country)
+   {
+      var (data, error) = await _weatherService.GetThreeDayForecastAsync(city, country);
+
+      if (error is not null)
+         return BadRequest(error);
+
+      if (data == null || data.Count == 0)
+         return NotFound("Keine 3-Tage Vorhersagedaten gefunden.");
+
+      return Ok(data);
+   }
+
+   [HttpGet("forecast/5days/{city}/{country}")]
+   public async Task<IActionResult> GetFiveDayForecast(string city, string country)
+   {
+      var (data, error) = await _weatherService.GetFiveDayForecastAsync(city, country);
+
+      if (error is not null)
+         return BadRequest(error);
+
+      if (data == null || data.Count == 0)
+         return NotFound("Keine 5-Tage Vorhersagedaten gefunden.");
+
+      return Ok(data);
+   }
 }

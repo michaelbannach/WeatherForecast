@@ -25,4 +25,29 @@ public static class OwmMapper
             Icon       = w?.Icon        ?? string.Empty
         };
     }
+
+    public static List<ForecastDto> ToForecastDtos(this CompleteForecastResponse forecastResponse)
+    {
+        var groupByDate = forecastResponse.List
+            .GroupBy(e => DateTime.Parse(e.DtTxt).Date)
+            .Select(g =>
+            {
+                var minTemp = g.Min(x => x.Main.TempMin);
+                var maxTemp = g.Max(x => x.Main.TempMax);
+                
+                var firstWeather = g.FirstOrDefault()?.Weather?.FirstOrDefault();
+
+                return new ForecastDto
+                {
+                    Date = g.Key,
+                    TempMin = minTemp,
+                    TempMax = maxTemp,
+                    Description = firstWeather?.Description ?? string.Empty,
+                    Icon = firstWeather?.Icon ?? string.Empty
+                };
+            })
+            .ToList();
+        
+        return groupByDate;
+    }
 }

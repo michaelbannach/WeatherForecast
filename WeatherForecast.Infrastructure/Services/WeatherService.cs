@@ -1,4 +1,10 @@
 using System.Text.Json;
+using System;
+using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using Microsoft.Extensions.Configuration;
 
 using WeatherForecast.Application.Dtos;
 using WeatherForecast.Application.Interfaces;
@@ -130,4 +136,47 @@ public class WeatherService : IWeatherService
             return (default, ex.Message);
         }
     }
+    
+    public async Task<(List<ForecastDto>? data, string? error)> GetForecastAsync(string city, string country, int days)
+    {
+        _logger.LogInformation("Starte Forecast-Abfrage ({Days} Tage) für Stadt '{City}', Land '{Country}'", days, city, country);
+
+        if (!Validate(city, country, out var c, out var co, out var error))
+        {
+            _logger.LogWarning("Validierungsfehler (Forecast): {Error}", error);
+            return (null, error);
+        }
+
+        var url = $"forecast?q={c},{co}&appid={_apiKey}&units=metric&lang=de";
+        _logger.LogInformation("Rufe OpenWeatherMap-Forecast-API auf: {Url}", url);
+
+        var (forecastResponse, apiError) = await GetJsonAsync<CompleteForecastResponse>(url);
+
+        if (apiError != null)
+        {
+            _logger.LogWarning("API-Fehler bei Forecast: {ApiError}", apiError);
+            return (null, apiError);
+        }
+
+        if (forecastResponse == null)
+        {
+            _logger.LogWarning("Keine Forecastdaten empfangen");
+            return (null, "Keine Forecastdaten empfangen");
+        }
+
+        var forecastDtos = forecastResponse.ToForecastDtos()
+            .OrderBy(x => x.Date)
+            .Take(days)
+            .ToList();
+
+        _logger.LogInformation("Forecast mit {ForecastCount} Tagen erfolgreich gemappt ({City},{Country})", forecastDtos.Count, city, country);
+
+        return (forecastDtos, null);
+    }
+
+    public Task<(List<ForecastDto>? data, string? error)> GetThreeDayForecastAsync(string city, string country)
+        => GetForecastAsync(city, country, 3);
+
+    public Task<(List<ForecastDto>? data, string? error)> GetFiveDayForecastAsync(string city, string country)
+        => GetForecastAsync(city, country, 5);
 }

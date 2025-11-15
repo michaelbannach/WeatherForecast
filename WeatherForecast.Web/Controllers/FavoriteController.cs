@@ -1,6 +1,9 @@
+using System.Threading.Tasks;
+using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Application.Dtos;
 
@@ -39,23 +42,35 @@ public class FavoriteController : ControllerBase
     }
     
     [HttpPost]
+    [Authorize(Roles = "SuperUser")]
     public async Task<IActionResult> AddFavoriteAsync([FromBody] FavoriteDto favoriteDto)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if(userId == null)
-            
+        if (userId == null)
             return Unauthorized();
+
         try
         {
-            await _favoriteService.AddFavoriteAsync(userId, favoriteDto);
-            return Ok();
-        }
+            var (added, error) = await _favoriteService.AddFavoriteAsync(userId, favoriteDto);
 
+            if (!added)
+            {
+                // Spezieller Fall: keine Berechtigung
+                if (error == "Keine Berechtigung zum Speichern")
+                {
+                    return Forbid(); // HTTP 403
+                }
+
+                // „normale“ Fehler (max. 5, Stadt existiert schon, etc.)
+                return BadRequest(new { message = error ?? "Speichern fehlgeschlagen" });
+            }
+
+            return Ok(new { message = "Favorit gespeichert" });
+        }
         catch (ArgumentException ex)
         {
             return BadRequest(new { message = ex.Message });
         }
-       
     }
  
     [HttpDelete("{favoriteId}")]
