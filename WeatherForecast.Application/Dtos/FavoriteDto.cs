@@ -4,5 +4,5 @@ public record FavoriteDto(
     int Id,
     string City,
     string Country,
-    string UserId
+    string? UserId
 );

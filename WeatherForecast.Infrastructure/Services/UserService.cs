@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Domain.Models;

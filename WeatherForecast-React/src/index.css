@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
-/* Globale Basis ohne @apply, damit Tailwind 4 nicht meckert */
+
 body {
     margin: 0;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #f1f5f9; /* entspricht bg-slate-100 */
-    color: #0f172a;           /* ungefähr text-slate-900 */
+    background-color: #f1f5f9; 
+    color: #0f172a;           
 }

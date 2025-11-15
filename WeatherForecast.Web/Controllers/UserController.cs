@@ -7,7 +7,6 @@ using WeatherForecast.Domain.Models;
 namespace WeatherForecast.Web.Controllers;
 
 
-
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]

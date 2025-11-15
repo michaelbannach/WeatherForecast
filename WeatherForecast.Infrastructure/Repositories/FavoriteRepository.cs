@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using Microsoft.EntityFrameworkCore;
 using WeatherForecast.Infrastructure.Data;
 using WeatherForecast.Domain.Interfaces;
@@ -19,7 +15,7 @@ public class FavoriteRepository : IFavoriteRepository
             .Where(x => x.UserId == userId)
             .OrderBy(x => x.Id)
             .ToListAsync();
-//Hier keine Logik wie Take(5) --> gehört ausschließlich in den Service
+
 
     public async Task<bool> AddFavoriteAsync(Favorite favorite)
     {

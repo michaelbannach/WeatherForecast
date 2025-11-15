@@ -14,9 +14,7 @@ export function SearchCard({
         <section className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 space-y-4">
             <header>
                 <h3 className="text-lg font-semibold">Wetter abfragen</h3>
-                <p className="text-sm text-slate-500">
-                    Stadt &amp; Ländercode eingeben und auf <strong>Suchen</strong> klicken.
-                </p>
+               
             </header>
 
             <form

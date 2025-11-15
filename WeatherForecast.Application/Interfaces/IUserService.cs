@@ -1,5 +1,3 @@
-
-using System.Threading.Tasks;
 using WeatherForecast.Domain.Models;
 
 namespace WeatherForecast.Application.Interfaces;

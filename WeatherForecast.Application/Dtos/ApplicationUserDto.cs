@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace WeatherForecast.Application.Dtos;
 
 public record ApplicationUserDto(

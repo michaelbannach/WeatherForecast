@@ -1,14 +1,17 @@
+
 import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 import { AppSidebar } from "./components/AppSidebar";
+import DashboardPage from "./components/DashboardPage";
 import LoginPage from "./components/LoginPage";
 import RegisterPage from "./components/RegisterPage";
 import { CurrentWeatherCard } from "./components/CurrentWeatherCard";
 import { ThreeDayForecastCard } from "./components/ThreeDayForecastCard";
 import { FiveDayForecastCard } from "./components/FiveDayForecastCard";
-import { SearchCard } from "./components/ui/SearchCard";
+import { SearchCard } from "./components/SearchCard";
+import WeatherDetailsCards from "./components/WeatherDetailsCards";
 
 const API_BASE = "http://localhost:5278";
 
@@ -21,50 +24,32 @@ export default function App() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleSearch = async (e) => {
-        e.preventDefault();
+    // Wetter für die Hauptseite (Suche) laden
+    const loadWeather = async (c, co) => {
         setError("");
         setWeather(null);
         setForecast3Days([]);
         setForecast5Days([]);
 
-        const c = city.trim();
-        const co = country.trim().toUpperCase();
-
-        if (!c) {
-            setError("Bitte eine Stadt eingeben.");
-            return;
-        }
-        if (co.length !== 2) {
-            setError("Bitte einen 2-stelligen Ländercode (z. B. DE) angeben.");
-            return;
-        }
+        setCity(c);
+        setCountry(co);
 
         setLoading(true);
 
         try {
-            // Aktuelles Wetter
             const respWeather = await fetch(
                 `${API_BASE}/api/weather/${encodeURIComponent(c)}/${encodeURIComponent(co)}`
             );
-            if (!respWeather.ok) {
-                const msg = await respWeather.text();
-                throw new Error(msg || "Fehler bei der Abfrage des aktuellen Wetters.");
-            }
+            if (!respWeather.ok) throw new Error(await respWeather.text());
             const weatherData = await respWeather.json();
             setWeather(weatherData);
 
-            // 3-Tage-Forecast
-            const resp3Days = await fetch(
+            const resp3 = await fetch(
                 `${API_BASE}/api/weather/forecast/3days/${encodeURIComponent(c)}/${encodeURIComponent(co)}`
             );
-            if (!resp3Days.ok) {
-                const msg = await resp3Days.text();
-                throw new Error(msg || "Fehler bei der Abfrage des 3-Tage-Forecasts.");
-            }
-            const forecast3Data = await resp3Days.json();
+            const threeDays = await resp3.json();
             setForecast3Days(
-                forecast3Data.map((d) => ({
+                threeDays.map((d) => ({
                     label: new Date(d.date).toLocaleDateString("de-DE", {
                         weekday: "short",
                     }),
@@ -75,17 +60,12 @@ export default function App() {
                 }))
             );
 
-            // 5-Tage-Forecast
-            const resp5Days = await fetch(
+            const resp5 = await fetch(
                 `${API_BASE}/api/weather/forecast/5days/${encodeURIComponent(c)}/${encodeURIComponent(co)}`
             );
-            if (!resp5Days.ok) {
-                const msg = await resp5Days.text();
-                throw new Error(msg || "Fehler bei der Abfrage des 5-Tage-Forecasts.");
-            }
-            const forecast5Data = await resp5Days.json();
+            const fiveDays = await resp5.json();
             setForecast5Days(
-                forecast5Data.map((d) => ({
+                fiveDays.map((d) => ({
                     label: new Date(d.date).toLocaleDateString("de-DE", {
                         weekday: "short",
                     }),
@@ -102,28 +82,39 @@ export default function App() {
         }
     };
 
+    const handleSearch = async (e) => {
+        e.preventDefault();
+
+        const c = city.trim();
+        const co = country.trim().toUpperCase();
+
+        if (!c) {
+            setError("Bitte eine Stadt eingeben.");
+            return;
+        }
+        if (co.length !== 2) {
+            setError("Bitte einen 2-stelligen Ländercode (z. B. DE) angeben.");
+            return;
+        }
+
+        await loadWeather(c, co);
+    };
+
     const handleAddToFavorites = async () => {
         if (!weather) return;
 
         try {
-            const favoriteDto = {
-                city: weather.city,
-                country: weather.country,
-            };
-
             const resp = await fetch(`${API_BASE}/api/favorite`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify(favoriteDto),
+                body: JSON.stringify({
+                    city: weather.city,
+                    country: weather.country,
+                }),
             });
 
-            if (!resp.ok) {
-                const msg = await resp.text();
-                throw new Error(msg || "Fehler beim Favoriten hinzufügen.");
-            }
+            if (!resp.ok) throw new Error(await resp.text());
 
             alert("Ort als Favorit gespeichert!");
         } catch (err) {
@@ -136,11 +127,10 @@ export default function App() {
             <div className="min-h-screen bg-slate-100 text-slate-900 flex">
                 <AppSidebar />
 
-                {/* ml-64, damit der Inhalt sauber rechts neben der Sidebar startet */}
                 <main className="flex-1 ml-64 flex items-start justify-center p-10">
                     <div className="w-full max-w-3xl space-y-6">
                         <Routes>
-                            {/* Startseite: Wettersuche */}
+                            {/* Wetterseite */}
                             <Route
                                 path="/"
                                 element={
@@ -158,6 +148,7 @@ export default function App() {
                                         {weather && (
                                             <>
                                                 <CurrentWeatherCard weather={weather} />
+                                                <WeatherDetailsCards weather={weather} />
                                                 <ThreeDayForecastCard forecast3Days={forecast3Days} />
                                                 <FiveDayForecastCard forecast5Days={forecast5Days} />
 
@@ -181,9 +172,12 @@ export default function App() {
                                 }
                             />
 
-                            {/* Login & Register */}
+                            
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/register" element={<RegisterPage />} />
+
+                           
+                            <Route path="/dashboard" element={<DashboardPage />} />
                         </Routes>
                     </div>
                 </main>

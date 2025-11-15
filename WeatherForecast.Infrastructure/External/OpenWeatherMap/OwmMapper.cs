@@ -1,5 +1,4 @@
 using WeatherForecast.Application.Dtos;
-using WeatherForecast.Infrastructure.External.OpenWeatherMap;
 
 namespace WeatherForecast.Infrastructure.External.OpenWeatherMap;
 

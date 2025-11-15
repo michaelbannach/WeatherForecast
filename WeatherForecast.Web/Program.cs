@@ -1,21 +1,14 @@
-using System;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using WeatherForecast.Infrastructure.Data;
+using WeatherForecast.Application.Services;
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Domain.Models;
 using WeatherForecast.Domain.Interfaces;
+using WeatherForecast.Infrastructure.Data;
 using WeatherForecast.Infrastructure.Repositories;
 using WeatherForecast.Infrastructure.Services;
-using WeatherForecast.Application.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,13 +22,13 @@ builder.Services.AddCors(options =>
             .AllowCredentials());
 });
 
-// Konfiguration laden
+// Konfiguration lade
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables();
 
-// Datenbank (MySQL)
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -43,7 +36,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     )
 );
 
-// Identity
+
 builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
@@ -55,7 +48,7 @@ builder.Services
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-// Eigene Services registrieren
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
@@ -63,7 +56,7 @@ builder.Services.AddHttpClient<IWeatherService, WeatherService>(c =>
     c.Timeout = TimeSpan.FromSeconds(10)
 );
 
-// Authentifizierung
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -76,7 +69,7 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Rollen sicherstellen (Scope separat)
+
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -93,7 +86,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Pipeline
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -103,7 +96,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseRouting();
-app.UseCors("Frontend");
+app.UseCors("Frontend"); //Zwingend vor Authentication und Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

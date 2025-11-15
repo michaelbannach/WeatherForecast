@@ -8,10 +8,6 @@ import {
     Snowflake,
 } from "lucide-react";
 
-/**
- * Erwartet ein weather-Objekt mit:
- * { city, country, temp, feelsLike, summary, description, icon }
- */
 export function CurrentWeatherCard({ weather }) {
     if (!weather) return null;
 

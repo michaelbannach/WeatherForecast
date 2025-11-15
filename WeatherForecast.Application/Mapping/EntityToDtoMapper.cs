@@ -1,4 +1,3 @@
-using System.Linq;
 using WeatherForecast.Domain.Models;
 using WeatherForecast.Application.Dtos;
 

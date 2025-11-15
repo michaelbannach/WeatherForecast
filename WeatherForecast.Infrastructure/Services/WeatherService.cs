@@ -1,15 +1,8 @@
 using System.Text.Json;
-using System;
-using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.Extensions.Logging;
-using System.Net.Http;
-using Microsoft.Extensions.Configuration;
 
 using WeatherForecast.Application.Dtos;
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Infrastructure.External.OpenWeatherMap;
-
 
 namespace WeatherForecast.Infrastructure.Services;
 
@@ -17,13 +10,13 @@ public class WeatherService : IWeatherService
 
 {
     private readonly ILogger<WeatherService> _logger;
-    //HttpClient-Instance -> HTTP-Request to extern API
+    
     private readonly HttpClient _http;
 
    
     private readonly string _apiKey;
 
-    //Dadurch wird API-Antwort CaseInsensitiv
+    
     private static readonly JsonSerializerOptions JsonOpt = new() { PropertyNameCaseInsensitive = true };
 
     //Helper to show errormessages from OpenWeatherMap API

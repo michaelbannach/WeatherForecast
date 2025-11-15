@@ -24,7 +24,7 @@ export default function RegisterPage() {
                 body: JSON.stringify({
                     Email: email,
                     Password: password,
-                    Role: role,               // 👈 WICHTIG: Role wird jetzt mitgeschickt
+                    Role: role,               
                 }),
             });
 

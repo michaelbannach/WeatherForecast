@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Microsoft.Extensions.Logging;
-
 using WeatherForecast.Application.Interfaces;
-using WeatherForecast.Domain.Models;
 using WeatherForecast.Application.Dtos;
 using WeatherForecast.Application.Mapping;
+using WeatherForecast.Domain.Models;
 using WeatherForecast.Domain.Interfaces;
 
 namespace WeatherForecast.Application.Services;

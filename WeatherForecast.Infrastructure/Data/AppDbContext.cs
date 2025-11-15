@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 using WeatherForecast.Domain.Models;
 
 namespace WeatherForecast.Infrastructure.Data;

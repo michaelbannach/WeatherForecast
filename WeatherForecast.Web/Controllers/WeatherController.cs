@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using WeatherForecast.Application.Interfaces;
 
+using WeatherForecast.Application.Interfaces;
 
 namespace WeatherForecast.Web.Controllers;
 
