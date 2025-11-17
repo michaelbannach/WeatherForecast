@@ -92,10 +92,16 @@ Die App bietet:
 ---
 
 ## Screenshots
-
+Registriermaske
 ![Registriermaske](docs/screenshots/Register.png)
+
+Loginmaske
 ![Login](docs/screenshots/Login.png)
-![Suchansicht](docs/screenshots/.png)
+
+Suchergebnis
+![Suchergebnis](docs/screenshots/Suchergebnis.png)
+
+Dashboard
 ![Dashboard](docs/screenshots/Dashboard.png)
 
 
@@ -148,6 +154,15 @@ npm run dev
 
 
 
+## Motivation & Lernziele
+
+Dieses Projekt entstand, um:
+
+- Full-Stack Entwicklung mit .NET & React praktisch anzuwenden
+
+- eine mehrschichtige Architektur mit Services, Repositories und DTOs zu implementieren
+
+- realistische Themen wie Authentifizierung, Rollen, externe APIs und UI/UX zu kombinieren
 
 
 
@@ -155,6 +170,11 @@ npm run dev
 
 
 
+
+#Autor
+
+Name: Michael Bannach
+Rolle: angehender Softwareentwickler
 
 
 
