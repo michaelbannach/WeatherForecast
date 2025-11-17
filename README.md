@@ -168,10 +168,8 @@ Dieses Projekt entstand, um:
 
 
 
+## Autor
 
-
-
-# Autor
 **Name:** Michael Bannach
 **Rolle:** angehender Softwareentwickler
 
