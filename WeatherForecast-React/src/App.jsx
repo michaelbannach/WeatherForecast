@@ -162,12 +162,7 @@ export default function App() {
                                             </>
                                         )}
 
-                                        {!weather && !error && (
-                                            <p className="text-xs text-slate-500 text-center">
-                                                Tipp: Probiere z.&nbsp;B. <strong>Berlin</strong> und{" "}
-                                                <strong>DE</strong>.
-                                            </p>
-                                        )}
+                                      
                                     </>
                                 }
                             />
