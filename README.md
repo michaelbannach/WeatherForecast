@@ -67,7 +67,7 @@ Die App bietet:
  
   ---
 
-  ## Tech Stack
+## Tech Stack
 
 **Frontend**
 
@@ -92,16 +92,16 @@ Die App bietet:
 ---
 
 ## Screenshots
-Registriermaske
+
 ![Registriermaske](docs/screenshots/Register.png)
 
-Loginmaske
+
 ![Login](docs/screenshots/Login.png)
 
-Suchergebnis
+
 ![Suchergebnis](docs/screenshots/Suchergebnis.png)
 
-Dashboard
+
 ![Dashboard](docs/screenshots/Dashboard.png)
 
 
