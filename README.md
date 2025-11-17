@@ -172,8 +172,8 @@ Dieses Projekt entstand, um:
 
 
 # Autor
-Name: Michael Bannach
-Rolle: angehender Softwareentwickler
+**Name:** Michael Bannach
+**Rolle:** angehender Softwareentwickler
 
 
 
