@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 using WeatherForecast.Application.Services;
 using WeatherForecast.Application.Interfaces;
-using WeatherForecast.Domain.Models;
+using WeatherForecast.Infrastructure.Models;
 using WeatherForecast.Domain.Interfaces;
 using WeatherForecast.Infrastructure.Data;
 using WeatherForecast.Infrastructure.Repositories;

@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+
+
 namespace WeatherForecast.Domain.Models;
 
 public class Favorite
@@ -16,6 +18,6 @@ public class Favorite
 
     public string UserId { get; set; } = null!;
 
-    public ApplicationUser ApplicationUser { get; set; } = null!;
+   
 
 }

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 using WeatherForecast.Domain.Models;
+using WeatherForecast.Infrastructure.Models;
 
 namespace WeatherForecast.Infrastructure.Data;
 
@@ -32,7 +33,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
             e.Property(x => x.UserId)
                 .IsRequired();
 
-            e.HasOne(x => x.ApplicationUser)
+            e.HasOne<ApplicationUser>()
                 .WithMany(u => u.Favorites)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);

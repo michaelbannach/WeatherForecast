@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using WeatherForecast.Domain.Models;
+using WeatherForecast.Infrastructure.Models;
 
 namespace WeatherForecast.Web.Controllers;
 
