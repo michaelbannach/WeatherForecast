@@ -94,7 +94,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors();
 app.UseRouting();
 app.UseCors("Frontend"); //Zwingend vor Authentication und Authorization
 app.UseAuthentication();
