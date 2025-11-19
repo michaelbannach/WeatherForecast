@@ -2,7 +2,7 @@ using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Application.Dtos;
 using WeatherForecast.Application.Mapping;
 using WeatherForecast.Domain.Models;
-using WeatherForecast.Domain.Interfaces;
+using WeatherForecast.Application.Interfaces;
 
 namespace WeatherForecast.Application.Services;
 

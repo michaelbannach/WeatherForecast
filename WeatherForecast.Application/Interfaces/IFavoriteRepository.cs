@@ -1,6 +1,6 @@
 using WeatherForecast.Domain.Models;
 
-namespace WeatherForecast.Domain.Interfaces;
+namespace WeatherForecast.Application.Interfaces;
 
 public interface IFavoriteRepository
 {
