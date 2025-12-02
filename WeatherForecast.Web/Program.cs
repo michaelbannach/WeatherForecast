@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using WeatherForecast.Application.Services;
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Infrastructure.Models;
-using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Infrastructure.Data;
 using WeatherForecast.Infrastructure.Repositories;
 using WeatherForecast.Infrastructure.Services;
@@ -52,6 +51,7 @@ builder.Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddHttpClient<IWeatherService, WeatherService>(c => 
     c.Timeout = TimeSpan.FromSeconds(10)
 );

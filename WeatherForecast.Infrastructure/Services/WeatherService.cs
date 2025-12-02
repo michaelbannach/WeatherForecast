@@ -48,14 +48,15 @@ public class WeatherService : IWeatherService
     {
         _logger.LogInformation("Starte Wetterabfrage für Stadt '{City}', Land '{Country}'", city, country);
 
-        //Validation of Input
-        if (!Validate(city, country, out var c, out var co, out var error))
+        var (normalizedCity, normalizedCountry, error) = Validate(city, country);
+
+        if (error is not null)
         {
             _logger.LogWarning("Validierungsfehler: {Error}", error);
             return (null, error);
         }
 
-        var url = $"weather?q={c},{co}&appid={_apiKey}&units=metric&lang=de";
+        var url = $"weather?q={normalizedCity},{normalizedCountry}&appid={_apiKey}&units=metric&lang=de";
         
         _logger.LogInformation("Rufe OpenWeatherMap-API auf: {Url}", url);
 
@@ -70,37 +71,18 @@ public class WeatherService : IWeatherService
         if (owm == null)
         {
             _logger.LogWarning("Keine Wetterdaten empfangen");
-            return(null,"Keine Wetterdaten empfangen");
+            return (null, "Keine Wetterdaten empfangen");
         }
 
-        var dto = owm.ToAppDto(city, country);
+        // für Fallback nehmen wir die normalisierte Stadt/Country
+        var dto = owm.ToAppDto(normalizedCity, normalizedCountry);
         
-        _logger.LogInformation("Wetterdaten erfolgreich gemappt für {City},{Country}", city, country);
+        _logger.LogInformation("Wetterdaten erfolgreich gemappt für {City},{Country}", normalizedCity, normalizedCountry);
       
-        return(dto, null);
-        
+        return (dto, null);
     }
    
-    private static bool Validate(string city, string country, out string c, out string co, out string? error)
-    {
-        c = (city ?? "").Trim();
-        co = (country ?? "").Trim().ToUpperInvariant();
-        co = new string(co.Where(char.IsLetter).ToArray());
-        if (co.Length >= 2) co = co[..2];
-
-        if (string.IsNullOrWhiteSpace(c))
-        {
-            error = "Bitte eine Stadt angeben.";
-            return false;
-        }
-        if (co.Length != 2)
-        {
-            error = "Ländercode muss 2-stellig sein (z. B. DE).";
-            return false;
-        }
-        error = null;
-        return true;
-    }
+    
 
     private async Task<(T? data, string? error)> GetJsonAsync<T>(string url)
     {
@@ -129,42 +111,65 @@ public class WeatherService : IWeatherService
             return (default, ex.Message);
         }
     }
+    private static (string City, string Country, string? Error) Validate(string city, string country)
+    {
+        var normalizedCity = (city ?? string.Empty).Trim();
+        var normalizedCountry = (country ?? string.Empty).Trim().ToUpperInvariant();
+
+        // nur Buchstaben erlauben
+        normalizedCountry = new string(normalizedCountry.Where(char.IsLetter).ToArray());
+
+        if (normalizedCountry.Length >= 2)
+            normalizedCountry = normalizedCountry[..2];
+
+        if (string.IsNullOrWhiteSpace(normalizedCity))
+            return ("", "", "Bitte eine Stadt angeben.");
+
+        if (normalizedCountry.Length != 2)
+            return ("", "", "Ländercode muss 2-stellig sein (z. B. DE).");
+
+        return (normalizedCity, normalizedCountry, null);
+    }
     
     public async Task<(List<ForecastDto>? data, string? error)> GetForecastAsync(string city, string country, int days)
     {
         _logger.LogInformation("Starte Forecast-Abfrage ({Days} Tage) für Stadt '{City}', Land '{Country}'", days, city, country);
 
-        if (!Validate(city, country, out var c, out var co, out var error))
+        var (normalizedCity, normalizedCountry, error) = Validate(city, country);
+
+        if (error is not null)
         {
             _logger.LogWarning("Validierungsfehler (Forecast): {Error}", error);
             return (null, error);
         }
 
-        var url = $"forecast?q={c},{co}&appid={_apiKey}&units=metric&lang=de";
-        _logger.LogInformation("Rufe OpenWeatherMap-Forecast-API auf: {Url}", url);
+        var url = $"forecast?q={normalizedCity},{normalizedCountry}&appid={_apiKey}&units=metric&lang=de";
 
-        var (forecastResponse, apiError) = await GetJsonAsync<CompleteForecastResponse>(url);
+        _logger.LogInformation("Rufe OpenWeatherMap-API (Forecast) auf: {Url}", url);
+
+        var (owm, apiError) = await GetJsonAsync<CompleteForecastResponse>(url);
 
         if (apiError != null)
         {
-            _logger.LogWarning("API-Fehler bei Forecast: {ApiError}", apiError);
+            _logger.LogWarning("API-Fehler (Forecast): {ApiError}", apiError);
             return (null, apiError);
         }
 
-        if (forecastResponse == null)
+        if (owm == null)
         {
-            _logger.LogWarning("Keine Forecastdaten empfangen");
-            return (null, "Keine Forecastdaten empfangen");
+            _logger.LogWarning("Keine Forecast-Daten empfangen");
+            return (null, "Keine Forecast-Daten empfangen");
         }
 
-        var forecastDtos = forecastResponse.ToForecastDtos()
-            .OrderBy(x => x.Date)
-            .Take(days)
-            .ToList();
+        var dtos = owm.ToForecastDtos();
 
-        _logger.LogInformation("Forecast mit {ForecastCount} Tagen erfolgreich gemappt ({City},{Country})", forecastDtos.Count, city, country);
+        _logger.LogInformation("Forecast-Daten erfolgreich gemappt für {City},{Country}", normalizedCity, normalizedCountry);
 
-        return (forecastDtos, null);
+        // ggf. days begrenzen (3/5-Tage-Use-Cases)
+        if (days > 0)
+            dtos = dtos.Take(days).ToList();
+
+        return (dtos, null);
     }
 
     public Task<(List<ForecastDto>? data, string? error)> GetThreeDayForecastAsync(string city, string country)
