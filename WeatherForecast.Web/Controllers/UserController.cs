@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using WeatherForecast.Web.Dtos.Auth;
 using WeatherForecast.Infrastructure.Models;
 
 namespace WeatherForecast.Web.Controllers;
@@ -47,11 +48,5 @@ namespace WeatherForecast.Web.Controllers;
         }
     }
 
-    public class RegisterDto
-    {
-        
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public string Role { get; set; }
-    }
+  
 
