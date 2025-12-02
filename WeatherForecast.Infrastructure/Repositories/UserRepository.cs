@@ -3,6 +3,7 @@ using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Domain.Models;
 using WeatherForecast.Infrastructure.Data;
 
+
 namespace WeatherForecast.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
@@ -14,21 +15,22 @@ public class UserRepository : IUserRepository
         _db = db;
     }
 
-    public Task<User?> GetByApplicationUserIdAsync(string applicationUserId) =>
-        _db.AppUsers
-            .Include(u => u.Favorites)
-            .FirstOrDefaultAsync(u => u.ApplicationUserId == applicationUserId);
-
-    public async Task<User> CreateForApplicationUserAsync(string applicationUserId)
+    public async Task<User?> GetByApplicationUserIdAsync(string applicationUserId)
     {
-        var user = new User
+        return await _db.Users
+            .FirstOrDefaultAsync(u => u.ApplicationUserId == applicationUserId);
+    }
+       
+    public async Task<User> CreateAsync(User user)
+    {
+        var newUser = new User
         {
             Id = Guid.NewGuid(),
-            ApplicationUserId = applicationUserId
+            ApplicationUserId = user.ApplicationUserId
             
         };
 
-        _db.AppUsers.Add(user);
+        _db.Users.Add(user);
         await _db.SaveChangesAsync();
 
         return user;

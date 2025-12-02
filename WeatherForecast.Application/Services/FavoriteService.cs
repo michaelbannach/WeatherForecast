@@ -29,7 +29,7 @@ public class FavoriteService : IFavoriteService
         if (string.IsNullOrWhiteSpace(applicationUserId))
             throw new ArgumentException("UserId darf nicht leer sein");
 
-        var domainUser = await _userService.GetOrCreateDomainUserAsync(applicationUserId);
+        var domainUser = await _userService.GetByApplicationUserIdAsync(applicationUserId);
 
         var favorites = await _favoriteRepository.GetFavoritesAsync(domainUser.Id);
         return favorites.Select(EntityToDtoMapper.ToDto).ToList();
@@ -40,10 +40,9 @@ public class FavoriteService : IFavoriteService
         if (string.IsNullOrWhiteSpace(applicationUserId))
             return (false, "Unbekannter Benutzer");
 
-        if (!await _userService.IsSuperUserAsync(applicationUserId))
-            return (false, "Keine Berechtigung zum Speichern");
-
-        var domainUser = await _userService.GetOrCreateDomainUserAsync(applicationUserId);
+        var domainUser = await _userService.GetByApplicationUserIdAsync(applicationUserId);
+        if (domainUser == null)
+            return (false, "Unknown User");
 
         var city = NormCity(favoriteDto.City);
         var country = NormCountry(favoriteDto.Country);
@@ -73,7 +72,7 @@ public class FavoriteService : IFavoriteService
         if (string.IsNullOrWhiteSpace(applicationUserId))
             return (false, "User darf nicht leer sein");
 
-        var domainUser = await _userService.GetOrCreateDomainUserAsync(applicationUserId);
+        var domainUser = await _userService.GetByApplicationUserIdAsync(applicationUserId);
 
         var deleted = await _favoriteRepository.DeleteByIdAsync(domainUser.Id, id);
 

@@ -40,7 +40,7 @@ public class FavoriteController : ControllerBase
     }
     
     [HttpPost]
-    [Authorize(Roles = "SuperUser")]
+    [Authorize]//(Policy = "SuperUserOnly")// ]
     public async Task<IActionResult> AddFavoriteAsync([FromBody] FavoriteDto favoriteDto)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

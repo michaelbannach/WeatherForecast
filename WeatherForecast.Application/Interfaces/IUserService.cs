@@ -4,8 +4,9 @@ namespace WeatherForecast.Application.Interfaces;
 
 public interface IUserService
 {
+    Task<User?> GetByApplicationUserIdAsync(string applicationUserId);
     
-    Task<bool> IsSuperUserAsync(string userId);
+    Task<(bool success, string? error, User? user)> CreateUserAsync(User user);
     
-    Task<User> GetOrCreateDomainUserAsync(string applicationUserId);
+  
 }

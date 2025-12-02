@@ -11,6 +11,8 @@ using WeatherForecast.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
@@ -47,14 +49,21 @@ builder.Services
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("SuperUserOnly", policy =>
+        policy.RequireRole("SuperUser"));
+});
 
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
-builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddHttpClient<IWeatherService, WeatherService>(c => 
     c.Timeout = TimeSpan.FromSeconds(10)
 );
+
+builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -66,6 +75,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -86,6 +97,11 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 if (!app.Environment.IsDevelopment())
 {

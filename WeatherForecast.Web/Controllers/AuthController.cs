@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
+using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Infrastructure.Models;
+using WeatherForecast.Web.Dtos.Auth;
 
 namespace WeatherForecast.Web.Controllers;
 
@@ -10,15 +13,12 @@ namespace WeatherForecast.Web.Controllers;
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly UserManager<ApplicationUser> _userManager;
-
-    public AuthController(
-        SignInManager<ApplicationUser> signInManager,
-        UserManager<ApplicationUser> userManager)
+   private readonly IAuthService _authService;
+   
+    public AuthController(IAuthService authService, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+       
     {
-        _signInManager = signInManager;
-        _userManager = userManager;
+      _authService = authService;
     }
 
     public record LoginDto(string Email, string Password);
@@ -27,25 +27,41 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
-        var user = await _userManager.FindByEmailAsync(dto.Email);
-        if (user == null)
-            return Unauthorized("Ungültige E-Mail oder Passwort");
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        var result = await _signInManager.PasswordSignInAsync(
-            user, dto.Password, isPersistent: true, lockoutOnFailure: false);
+        var (success, error) = await _authService.LoginAsync(dto.Email, dto.Password);
+        if (!success)
+            return Unauthorized(new { error });
 
-        if (!result.Succeeded)
-            return Unauthorized("Ungültige E-Mail oder Passwort");
-
-        // Cookie wird gesetzt, weitere Requests laufen authentifiziert
-        return Ok("Logged in");
+        // später: JWT im Response zurückgeben
+        return Ok(new { Message = "Login ok" });
     }
+    
+    [HttpPost("register")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+    {
+        var (success, error, appUserId, domainUserId) = await _authService.RegisterAsync(
+            dto.Email, dto.Password, dto.FirstName, dto.LastName, dto.Role);
+
+        if (!success)
+            return BadRequest(new { error });
+
+        return Ok(new 
+        { 
+            message = "User created successfully",
+            appUserId,
+            domainUserId 
+        });
+    }
+
 
     [HttpPost("logout")]
     [Authorize]
     public async Task<IActionResult> Logout()
     {
-        await _signInManager.SignOutAsync();
+        await _authService.LogoutAsync();
         return Ok("Logged out");
     }
 }
