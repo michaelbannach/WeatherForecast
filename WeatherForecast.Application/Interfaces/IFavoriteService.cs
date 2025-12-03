@@ -1,13 +1,13 @@
-using WeatherForecast.Application.Dtos;
+using WeatherForecast.Domain.Models;
 
 
 namespace WeatherForecast.Application.Interfaces;
 
 public interface IFavoriteService
 {
-    Task<List<FavoriteDto>> GetFavoritesAsync(string userId);
-    Task<(bool added, string? error)> AddFavoriteAsync(string userId, FavoriteDto favoriteDto);
-    //Task<bool> DeleteByIdAsync(string userId, int id); -> Controller weiß nicht, warum es fehlschlug
+    Task<List<Favorite>> GetFavoritesAsync(string applicationUserId);
+    Task<(bool added, string? error)> AddFavoriteAsync(string applicationUserId, Favorite favorite);
+   
 
-    Task<(bool deleted, string? error)> DeleteByIdAsync(string userId, int id);
+    Task<(bool deleted, string? error)> DeleteByIdAsync(string applicationUserId, int id);
 }
