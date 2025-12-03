@@ -7,7 +7,7 @@ using WeatherForecast.Infrastructure.Models;
 using WeatherForecast.Infrastructure.Data;
 using WeatherForecast.Infrastructure.Repositories;
 using WeatherForecast.Infrastructure.Services;
-
+using WeatherForecast.Infrastructure.Seeding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,13 +80,9 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
-    string[] roles = { "SuperUser", "User" };
+await using var roleScope = app.Services.CreateAsyncScope();
+var roleManager = roleScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+string[] roles = { "SuperUser", "User" };
 
     foreach (var role in roles)
     {
@@ -95,12 +91,14 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
         }
     }
-}
+
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    using var scope = app.Services.CreateScope();
+    await DevelopmentSeeder.SeedAsync(app.Services);
 }
 
 if (!app.Environment.IsDevelopment())
