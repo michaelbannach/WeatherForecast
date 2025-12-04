@@ -33,6 +33,9 @@ public class FavoriteServiceTests
         await Assert.ThrowsAsync<ArgumentException>(() => sut.GetFavoritesAsync("app-1"));
     }
 
+   
+
+    
     [Fact]
     public async Task GetFavoritesAsync_returns_favorites_for_user()
     {
@@ -170,4 +173,73 @@ public class FavoriteServiceTests
         _favoriteRepoMock.Verify(r => r.AddFavoriteAsync(
             It.Is<Favorite>(f => f.City == "Berlin" && f.Country == "DE")), Times.Once);
     }
+    
+    [Fact]
+    public async Task DeleteByIdAsync_returns_error_if_userId_empty()
+    {
+        var sut = CreateService();
+
+        var (success, error) = await sut.DeleteByIdAsync("", 42);
+
+        Assert.False(success);
+        Assert.Equal("User darf nicht leer sein", error);
+    }
+
+    [Fact]
+    public async Task DeleteByIdAsync_returns_error_if_user_not_found()
+    {
+        var sut = CreateService();
+
+        _userServiceMock
+            .Setup(s => s.GetByApplicationUserIdAsync("app-1"))
+            .ReturnsAsync((User?)null);
+
+        var (success, error) = await sut.DeleteByIdAsync("app-1", 42);
+
+        Assert.False(success);
+        Assert.Equal("Benutzer nicht gefunden", error);
+    }
+
+    [Fact]
+    public async Task DeleteByIdAsync_returns_error_if_repo_returns_false()
+    {
+        var sut = CreateService();
+        var user = new User { Id = Guid.NewGuid(), ApplicationUserId = "app-1" };
+
+        _userServiceMock
+            .Setup(s => s.GetByApplicationUserIdAsync("app-1"))
+            .ReturnsAsync(user);
+
+        _favoriteRepoMock
+            .Setup(r => r.DeleteByIdAsync(user.Id, 42))
+            .ReturnsAsync(false);
+
+        var (success, error) = await sut.DeleteByIdAsync("app-1", 42);
+
+        Assert.False(success);
+        Assert.Equal("Favorit nicht gefunden oder nicht gelöscht", error);
+    }
+
+    [Fact]
+    public async Task DeleteByIdAsync_success_deletes_favorite()
+    {
+        var sut = CreateService();
+        var user = new User { Id = Guid.NewGuid(), ApplicationUserId = "app-1" };
+
+        _userServiceMock
+            .Setup(s => s.GetByApplicationUserIdAsync("app-1"))
+            .ReturnsAsync(user);
+
+        _favoriteRepoMock
+            .Setup(r => r.DeleteByIdAsync(user.Id, 42))
+            .ReturnsAsync(true);
+
+        var (success, error) = await sut.DeleteByIdAsync("app-1", 42);
+
+        Assert.True(success);
+        Assert.Null(error);
+
+        _favoriteRepoMock.Verify(r => r.DeleteByIdAsync(user.Id, 42), Times.Once);
+    }
+
 }
