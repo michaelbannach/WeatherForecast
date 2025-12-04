@@ -11,7 +11,9 @@ using WeatherForecast.Infrastructure.Seeding;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+Console.WriteLine("### ENVIRONMENT = " + builder.Environment.EnvironmentName);
+Console.WriteLine("### OpenWeatherMap:BaseUrl = '" + (builder.Configuration["OpenWeatherMap:BaseUrl"] ?? "<null>") + "'");
+Console.WriteLine("### OpenWeatherMap:ApiKey = '" + (builder.Configuration["OpenWeatherMap:ApiKey"] ?? "<null>") + "'");
 
 builder.Services.AddCors(options =>
 {
