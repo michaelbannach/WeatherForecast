@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  
-
+    
     <PropertyGroup>
-      <TargetFramework>net9.0</TargetFramework>  <!-- ← net9.0 statt net8.0! -->
+      <TargetFramework>net9.0</TargetFramework>  
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
       <IsPackable>false</IsPackable>
@@ -21,9 +19,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <!-- Projekt-Referenzen bleiben gleich -->
       <ProjectReference Include="..\WeatherForecast.Application\WeatherForecast.Application.csproj" />
       <ProjectReference Include="..\WeatherForecast.Domain\WeatherForecast.Domain.csproj" />
+        <ProjectReference Include="..\WeatherForecast.Infrastructure\WeatherForecast.Infrastructure.csproj" />
+        <ProjectReference Include="..\WeatherForecast.Web\WeatherForecast.Web.csproj" />
     </ItemGroup>
 
   </Project>
