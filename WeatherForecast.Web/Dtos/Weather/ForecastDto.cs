@@ -1,4 +1,4 @@
-namespace WeatherForecast.Application.Dtos;
+namespace WeatherForecast.Web.Weather.Dtos;
 
 public sealed class ForecastDto
 {
