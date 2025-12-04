@@ -3,12 +3,10 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
-using Moq;
-using Moq.Protected;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
+using Moq;
+using Moq.Protected;
 using WeatherForecast.Infrastructure.Services;
 using Xunit;
 
@@ -80,6 +78,28 @@ public class WeatherServiceTests
     }
 
     [Fact]
+    public async Task GetWeatherAsync_returns_error_if_http_throws_exception()
+    {
+        var handlerMock = new Mock<HttpMessageHandler>();
+
+        handlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ThrowsAsync(new HttpRequestException("Boom"));
+
+        var http = new HttpClient(handlerMock.Object);
+        var sut = CreateService(http);
+
+        var (data, error) = await sut.GetWeatherAsync("Berlin", "DE");
+
+        Assert.Null(data);
+        Assert.Equal("Boom", error);
+    }
+
+    [Fact]
     public async Task GetWeatherAsync_success_returns_weather()
     {
         var json = @"{
@@ -98,5 +118,29 @@ public class WeatherServiceTests
         Assert.NotNull(data);
         Assert.Equal("Berlin", data!.City);
         Assert.Equal("DE", data.Country);
+    }
+
+    [Fact]
+    public async Task GetThreeDayForecastAsync_returns_error_if_city_missing()
+    {
+        var http = CreateHttpClient(HttpStatusCode.OK, "{}");
+        var sut = CreateService(http);
+
+        var (data, error) = await sut.GetThreeDayForecastAsync("", "DE");
+
+        Assert.Null(data);
+        Assert.Equal("Bitte eine Stadt angeben.", error);
+    }
+
+    [Fact]
+    public async Task GetThreeDayForecastAsync_returns_error_if_http_not_success()
+    {
+        var http = CreateHttpClient(HttpStatusCode.BadRequest, "{\"message\":\"Bad request\"}");
+        var sut = CreateService(http);
+
+        var (data, error) = await sut.GetThreeDayForecastAsync("Berlin", "DE");
+
+        Assert.Null(data);
+        Assert.NotNull(error);
     }
 }

@@ -1,4 +1,6 @@
-using Xunit;
+using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -6,19 +8,22 @@ using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Application.Services;
 using WeatherForecast.Domain.Models;
 using WeatherForecast.Infrastructure.Models;
+using Xunit;
+
+namespace WeatherForecast.Application.Tests.Services;
 
 public class AuthServiceTests
 {
-    private Mock<UserManager<ApplicationUser>> CreateUserManagerMock()
+    private static Mock<UserManager<ApplicationUser>> CreateUserManagerMock()
     {
         var store = new Mock<IUserStore<ApplicationUser>>();
         return new Mock<UserManager<ApplicationUser>>(
             store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
     }
 
-    private Mock<SignInManager<ApplicationUser>> CreateSignInManagerMock(UserManager<ApplicationUser> userManager)
+    private static Mock<SignInManager<ApplicationUser>> CreateSignInManagerMock(UserManager<ApplicationUser> userManager)
     {
-        var contextAccessor = new Mock<Microsoft.AspNetCore.Http.IHttpContextAccessor>();
+        var contextAccessor = new Mock<IHttpContextAccessor>();
         var claimsFactory = new Mock<IUserClaimsPrincipalFactory<ApplicationUser>>();
 
         return new Mock<SignInManager<ApplicationUser>>(
@@ -28,7 +33,7 @@ public class AuthServiceTests
             null!, null!, null!, null!);
     }
 
-    private Mock<RoleManager<IdentityRole>> CreateRoleManagerMock()
+    private static Mock<RoleManager<IdentityRole>> CreateRoleManagerMock()
     {
         var store = new Mock<IRoleStore<IdentityRole>>();
         return new Mock<RoleManager<IdentityRole>>(
@@ -39,7 +44,8 @@ public class AuthServiceTests
              Mock<SignInManager<ApplicationUser>> signInMock,
              Mock<UserManager<ApplicationUser>> userManagerMock,
              Mock<RoleManager<IdentityRole>> roleManagerMock,
-             Mock<IUserService> userServiceMock) CreateService()
+             Mock<IUserService> userServiceMock)
+        CreateService()
     {
         var userManagerMock = CreateUserManagerMock();
         var signInMock = CreateSignInManagerMock(userManagerMock.Object);
@@ -73,7 +79,7 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task LoginAsync_invalid_credentials_returns_false_with_error()
+    public async Task LoginAsync_invalid_credentials_returns_error()
     {
         var (sut, signInMock, _, _, _) = CreateService();
 
@@ -88,9 +94,42 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task RegisterAsync_creates_identity_and_domain_user()
+    public async Task LoginAsync_returns_internal_error_if_exception_thrown()
     {
-        var (sut, _, userManagerMock, roleManagerMock, userServiceMock) = CreateService();
+        var (sut, signInMock, _, _, _) = CreateService();
+
+        signInMock
+            .Setup(s => s.PasswordSignInAsync("test@test.de", "Pass!123", false, false))
+            .ThrowsAsync(new Exception("boom"));
+
+        var (success, error) = await sut.LoginAsync("test@test.de", "Pass!123");
+
+        Assert.False(success);
+        Assert.Equal("Interner Serverfehler", error);
+    }
+
+    [Fact]
+    public async Task RegisterAsync_returns_error_if_identity_creation_fails()
+    {
+        var (sut, _, userManagerMock, _, _) = CreateService();
+
+        userManagerMock
+            .Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), "Pass!123"))
+            .ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Invalid" }));
+
+        var (success, error, appUserId, domainUserId) =
+            await sut.RegisterAsync("test@test.de", "Pass!123", "Max", "Mustermann");
+
+        Assert.False(success);
+        Assert.Contains("Invalid", error);
+        Assert.Null(appUserId);
+        Assert.Null(domainUserId);
+    }
+
+    [Fact]
+    public async Task RegisterAsync_returns_error_if_domain_user_creation_fails()
+    {
+        var (sut, _, userManagerMock, _, userServiceMock) = CreateService();
 
         userManagerMock
             .Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), "Pass!123"))
@@ -98,7 +137,37 @@ public class AuthServiceTests
 
         userServiceMock
             .Setup(s => s.CreateUserAsync(It.IsAny<User>()))
-            .ReturnsAsync((true, (string?)null, new User { Id = Guid.NewGuid() }));
+            .ReturnsAsync((false, "DomainError", (User?)null));
+
+        userManagerMock
+            .Setup(m => m.DeleteAsync(It.IsAny<ApplicationUser>()))
+            .ReturnsAsync(IdentityResult.Success);
+
+        var (success, error, appUserId, domainUserId) =
+            await sut.RegisterAsync("test@test.de", "Pass!123", "Max", "Mustermann");
+
+        Assert.False(success);
+        Assert.Equal("DomainError", error);
+        Assert.Null(appUserId);
+        Assert.Null(domainUserId);
+
+        userManagerMock.Verify(m => m.DeleteAsync(It.IsAny<ApplicationUser>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task RegisterAsync_success_creates_user_and_assigns_role()
+    {
+        var (sut, _, userManagerMock, roleManagerMock, userServiceMock) = CreateService();
+
+        userManagerMock
+            .Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), "Pass!123"))
+            .ReturnsAsync(IdentityResult.Success);
+
+        var createdDomainUser = new User { Id = Guid.NewGuid() };
+
+        userServiceMock
+            .Setup(s => s.CreateUserAsync(It.IsAny<User>()))
+            .ReturnsAsync((true, (string?)null, createdDomainUser));
 
         roleManagerMock
             .Setup(r => r.RoleExistsAsync("User"))
@@ -114,6 +183,6 @@ public class AuthServiceTests
         Assert.True(success);
         Assert.Null(error);
         Assert.False(string.IsNullOrWhiteSpace(appUserId));
-        Assert.NotNull(domainUserId);
+        Assert.Equal(createdDomainUser.Id, domainUserId);
     }
 }
