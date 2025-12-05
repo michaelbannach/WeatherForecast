@@ -26,7 +26,7 @@ public static class DevelopmentSeeder
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
 
-        // 1) SUPERUSER für Favorites (SuperUser Policy)
+        // 1) SUPERUSER for Favorites (SuperUser Policy)
         const string userName = "superuser";
         const string email = "superuser@test.local";
         const string password = "Super123!";
@@ -55,7 +55,7 @@ public static class DevelopmentSeeder
             await userManager.AddToRoleAsync(superUser, "SuperUser");
         }
 
-        // 2) Domain User für Favorites
+        // 2) Domain User for Favorites
         var domainUser = await db.Users.FirstOrDefaultAsync(u => u.ApplicationUserId == superUser.Id);
         if (domainUser == null)
         {
@@ -68,7 +68,7 @@ public static class DevelopmentSeeder
             await userService.CreateUserAsync(domainUser);
         }
 
-        // 3) TEST FAVORITE für Swagger
+        // 3) TEST FAVORITE for Swagger
         if (!await db.Favorites.AnyAsync())
         {
             await db.Favorites.AddAsync(new Favorite

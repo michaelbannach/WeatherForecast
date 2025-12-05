@@ -1,9 +1,7 @@
-// File: Web/Controllers/WeatherController.cs
 using Microsoft.AspNetCore.Mvc;
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Web.Mappings;
 using WeatherForecast.Web.Weather.Dtos;
-using WeatherForecast.Domain.Models;
 
 namespace WeatherForecast.Web.Controllers;
 
@@ -27,7 +25,7 @@ public class WeatherController : ControllerBase
             return BadRequest(error);
 
         if (weather is null)
-            return NotFound("Keine Wetterdaten gefunden.");
+            return NotFound("No Weatherdata found.");
 
         WeatherDto dto = weather.ToDto();
         return Ok(dto);
@@ -42,7 +40,7 @@ public class WeatherController : ControllerBase
             return BadRequest(error);
 
         if (forecasts == null || forecasts.Count == 0)
-            return NotFound("Keine 3-Tage Vorhersagedaten gefunden.");
+            return NotFound("No 3-Days-Forecast-Data found.");
 
         var dtos = forecasts.Select(f => f.ToDto()).ToList();
         return Ok(dtos);
@@ -57,7 +55,7 @@ public class WeatherController : ControllerBase
             return BadRequest(error);
 
         if (forecasts == null || forecasts.Count == 0)
-            return NotFound("Keine 5-Tage Vorhersagedaten gefunden.");
+            return NotFound("No 5-Days-Forecast-Data found.");
 
         var dtos = forecasts.Select(f => f.ToDto()).ToList();
         return Ok(dtos);

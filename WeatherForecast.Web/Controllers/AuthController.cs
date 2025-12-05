@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
         if (!success)
             return Unauthorized(new { error });
 
-        // später: JWT im Response zurückgeben
+        // JWT!!
         return Ok(new { Message = "Login ok" });
     }
     

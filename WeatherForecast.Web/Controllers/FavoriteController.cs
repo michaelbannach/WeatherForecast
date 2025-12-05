@@ -62,14 +62,14 @@ public class FavoriteController : ControllerBase
             if (!added)
             {
                
-                if (error?.Contains("Berechtigung") == true)
+                if (error?.Contains("Authorization") == true)
                     return Forbid(); // HTTP 403
                 
                 
-                return BadRequest(new { message = error ?? "Speichern fehlgeschlagen" });
+                return BadRequest(new { message = error ?? "Save failed" });
             }
 
-            return Ok(new { message = "Favorit gespeichert" });
+            return Ok(new { message = "Favorite saved successfully" });
         }
         catch (ArgumentException ex)
         {
@@ -87,8 +87,8 @@ public class FavoriteController : ControllerBase
         var (deleted, error) = await _favoriteService.DeleteByIdAsync(userId, favoriteId);
         
         if (!deleted)
-            return NotFound(new { message = error ?? "Favorit nicht gefunden" });
+            return NotFound(new { message = error ?? "Favorite not found" });
 
-        return Ok(new { message = "Favorit gelöscht" });
+        return Ok(new { message = "Favorite deleted" });
     }
 }

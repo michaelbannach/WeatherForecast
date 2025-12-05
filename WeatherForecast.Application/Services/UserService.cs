@@ -39,13 +39,13 @@ public class UserService : IUserService
     {
         
         if (string.IsNullOrWhiteSpace(user.FirstName) || string.IsNullOrWhiteSpace(user.LastName))
-            return (false, "Vor- und Nachname erforderlich", null);
+            return (false, "First- and Lastname required", null);
 
         try
         {
             var existingUser = await _userRepository.GetByApplicationUserIdAsync(user.ApplicationUserId);
             if (existingUser != null)
-                return (false, "User existiert bereits", null);
+                return (false, "User already exists", null);
 
             user.Id = Guid.NewGuid();  
         

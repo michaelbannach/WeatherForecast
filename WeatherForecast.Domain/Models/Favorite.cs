@@ -1,7 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
-
-
 namespace WeatherForecast.Domain.Models;
 
 public class Favorite

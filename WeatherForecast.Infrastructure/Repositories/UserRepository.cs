@@ -3,7 +3,6 @@ using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Domain.Models;
 using WeatherForecast.Infrastructure.Data;
 
-
 namespace WeatherForecast.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository

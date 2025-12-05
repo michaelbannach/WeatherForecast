@@ -4,7 +4,7 @@ namespace WeatherForecast.Infrastructure.External.OpenWeatherMap;
 
 public static class OwmMapper
 {
-    // Mappt zu Domain Model, nicht zu DTO!
+    // Mapping to Domain Model, not DTO!
     public static Weather ToWeatherEntity(
         this CompleteWeatherResponse owm, 
         string fallbackCity, 

@@ -8,6 +8,10 @@ export default function RegisterPage() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+
     const [isSuperUser, setIsSuperUser] = useState(false);
     const [message, setMessage] = useState("");
 
@@ -18,13 +22,15 @@ export default function RegisterPage() {
         const role = isSuperUser ? "SuperUser" : "NormalUser";
 
         try {
-            const resp = await fetch(`${API_BASE}/api/user/register`, {
+            const resp = await fetch(`${API_BASE}/api/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     Email: email,
                     Password: password,
-                    Role: role,               
+                    FirstName: firstName,
+                    LastName: lastName,
+                    Role: role
                 }),
             });
 
@@ -35,8 +41,8 @@ export default function RegisterPage() {
 
             setMessage("Benutzer erfolgreich registriert!");
 
-            // nach kurzer Zeit zur Login-Maske
             setTimeout(() => navigate("/login"), 1000);
+
         } catch (err) {
             setMessage(err.message);
         }
@@ -47,6 +53,33 @@ export default function RegisterPage() {
             <h2 className="text-xl font-semibold mb-4">Registrieren</h2>
 
             <form onSubmit={handleRegister} className="space-y-4">
+
+                <div>
+                    <label className="block text-sm font-medium text-slate-700">
+                        Vorname
+                    </label>
+                    <input
+                        type="text"
+                        required
+                        className="mt-1 w-full border rounded-md px-3 py-2 bg-slate-50 text-sm"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-slate-700">
+                        Nachname
+                    </label>
+                    <input
+                        type="text"
+                        required
+                        className="mt-1 w-full border rounded-md px-3 py-2 bg-slate-50 text-sm"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                    />
+                </div>
+
                 <div>
                     <label className="block text-sm font-medium text-slate-700">
                         E-Mail
@@ -91,6 +124,7 @@ export default function RegisterPage() {
                 >
                     Registrieren
                 </button>
+
             </form>
         </div>
     );

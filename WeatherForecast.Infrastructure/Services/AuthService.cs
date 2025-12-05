@@ -1,4 +1,3 @@
-// Application/Services/AuthService.cs
 using Microsoft.AspNetCore.Identity;
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Domain.Models;
