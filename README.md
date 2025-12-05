@@ -65,12 +65,12 @@ Die App bietet:
 
 <img src="docs/screenshots/Diagramm.png" width="500px">
 
-UI(Frontend)    - Benutzerinteratkion & Darstellung
-Web Layer       - API, Validierung, Routing
-Application     - Business-Orchestrierung, UseCases
-Domain          - Reine Geschäftslogik ohne Framework
-Infrastructure  - Technische Umsetzung, externer Zugriff
-DB              - Persistenzschicht
+- UI(Frontend)    - Benutzerinteratkion & Darstellung
+- Web Layer       - API, Validierung, Routing
+- Application     - Business-Orchestrierung, UseCases
+- Domain          - Reine Geschäftslogik ohne Framework
+- Infrastructure  - Technische Umsetzung, externer Zugriff
+- DB              - Persistenzschicht
 
 **Abhängigkeiten zeichen nach innen**
  
