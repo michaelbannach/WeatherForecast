@@ -102,17 +102,13 @@ Die App bietet:
 
 ## Screenshots
 
-![Registriermaske](docs/screenshots/Register.png)
+<img src="docs/screenshots/Register.png" width="350px">
 
+<img src="docs/screenshots/Login.png" width="350px">
 
-![Login](docs/screenshots/Login.png)
+<img src="docs/screenshots/Suchergebnis.png" width="350px">
 
-
-![Suchergebnis](docs/screenshots/Suchergebnis.png)
-
-
-![Dashboard](docs/screenshots/Dashboard.png)
-
+<img src="docs/screenshots/Dashboard.png" width="350px">
 
 ### Backend Setup & Konfiguration
 
