@@ -59,20 +59,20 @@ Die App bietet:
 
    ---
 
-![Diagramm](docs/screenshots/Diagramm.png)
+
 
   ### Backend (ASP.NET Core Web API)
 
-- Mehrschichtige Architektur
- | Layer              | Inhalt                                    | Beschreibung                           |
-| ------------------ | ----------------------------------------- | -------------------------------------- |
-| **UI (Frontend)**  | React, Tailwind CSS                       | Benutzerinteraktion & Darstellung      |
-| **Web Layer**      | Controllers, DTOs, Mappings               | API-Oberfläche, Validierung, Routing   |
-| **Application**    | Services, Interfaces                      | Business-Orchestrierung, UseCases      |
-| **Domain**         | Entities, Business Rules                  | Reine Geschäftslogik ohne Framework    |
-| **Infrastructure** | DbContext, Repositories, externe Services | Technische Umsetzung, externer Zugriff |
-| **DB**             | MySQL                                     | Persistenzschicht                      |
+<img src="docs/screenshots/Diagramm.png" width="500px">
 
+UI(Frontend)    - Benutzerinteratkion & Darstellung
+Web Layer       - API, Validierung, Routing
+Application     - Business-Orchestrierung, UseCases
+Domain          - Reine Geschäftslogik ohne Framework
+Infrastructure  - Technische Umsetzung, externer Zugriff
+DB              - Persistenzschicht
+
+**Abhängigkeiten zeichen nach innen**
  
   ---
 
