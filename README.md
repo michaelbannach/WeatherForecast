@@ -1,5 +1,7 @@
 # WeatherForecast – Full-Stack Wetter App (ASP.NET Core + React)
 
+![Diagramm](docs/screenshots/Diagramm.png)
+
 WeatherForecast ist eine vollständige Full-Stack-Anwendung zur Abfrage von aktuellen Wetterdaten und Vorhersagen auf Basis der **OpenWeatherMap API**.  
 Die App bietet:
 
