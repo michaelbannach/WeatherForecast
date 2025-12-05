@@ -1,4 +1,7 @@
-# WeatherForecast – Full-Stack Wetter App (ASP.NET Core + React)
+# WeatherForecast – Full-Stack Wetter App 
+ASP.NET Core + React
+
+
 
 WeatherForecast ist eine vollständige Full-Stack-Anwendung zur Abfrage von aktuellen Wetterdaten und Vorhersagen auf Basis der **OpenWeatherMap API**.  
 Die App bietet:
@@ -56,14 +59,20 @@ Die App bietet:
 
    ---
 
+
+
   ### Backend (ASP.NET Core Web API)
 
-- Mehrschichtige Architektur
-  - Domain: Modelle (`ApplicationUser`, `Favorite`)
-  - Application: Interfaces, DTOs, Mapping, Business-Logik (`FavoriteService`, `IWeatherService`, `IUserService`)
-  - Infrastructure: EF Core, Repositories, externe API-Anbindung (OpenWeatherMap)
-  - Web: Controller (WeatherController, FavoriteController, UserController, AuthController)
-  - Datenbank: MySql 8 via EF Core
+<img src="docs/screenshots/Diagramm.png" width="500px">
+
+- UI(Frontend)    - Benutzerinteratkion & Darstellung
+- Web Layer       - API, Validierung, Routing
+- Application     - Business-Orchestrierung, UseCases
+- Domain          - Reine Geschäftslogik ohne Framework
+- Infrastructure  - Technische Umsetzung, externer Zugriff
+- DB              - Persistenzschicht
+
+**Abhängigkeiten zeichen nach innen**
  
   ---
 
@@ -93,17 +102,13 @@ Die App bietet:
 
 ## Screenshots
 
-![Registriermaske](docs/screenshots/Register.png)
+<img src="docs/screenshots/Register.png" width="350px">
 
+<img src="docs/screenshots/Login.png" width="350px">
 
-![Login](docs/screenshots/Login.png)
+<img src="docs/screenshots/Suchergebnis.png" width="350px">
 
-
-![Suchergebnis](docs/screenshots/Suchergebnis.png)
-
-
-![Dashboard](docs/screenshots/Dashboard.png)
-
+<img src="docs/screenshots/Dashboard.png" width="350px">
 
 ### Backend Setup & Konfiguration
 
