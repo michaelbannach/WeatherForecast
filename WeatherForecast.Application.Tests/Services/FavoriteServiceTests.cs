@@ -71,7 +71,7 @@ public class FavoriteServiceTests
         var (added, error) = await sut.AddFavoriteAsync("", new Favorite());
 
         Assert.False(added);
-        Assert.Equal("Unbekannter Benutzer", error);
+        Assert.Equal("Unknown User", error);
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class FavoriteServiceTests
         var (added, error) = await sut.AddFavoriteAsync("app-1", new Favorite());
 
         Assert.False(added);
-        Assert.Equal("Benutzer nicht gefunden", error);
+        Assert.Equal("User not found", error);
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public class FavoriteServiceTests
         var (added, error) = await sut.AddFavoriteAsync("app-1", favorite);
 
         Assert.False(added);
-        Assert.Equal("Stadt und Land dürfen nicht leer sein", error);
+        Assert.Equal("City and Country must not be empty", error);
     }
 
     [Fact]
@@ -125,7 +125,7 @@ public class FavoriteServiceTests
         var (added, error) = await sut.AddFavoriteAsync("app-1", favorite);
 
         Assert.False(added);
-        Assert.Equal("Diese Stadt ist bereits gespeichert", error);
+        Assert.Equal("City already exists", error);
     }
 
     [Fact]
@@ -151,7 +151,7 @@ public class FavoriteServiceTests
         var (added, error) = await sut.AddFavoriteAsync("app-1", favorite);
 
         Assert.False(added);
-        Assert.Equal("Maximal 5 erlaubt", error);
+        Assert.Equal("Maximal 5 allowed", error);
     }
 
     [Fact]
@@ -181,7 +181,7 @@ public class FavoriteServiceTests
         var (added, error) = await sut.AddFavoriteAsync("app-1", favorite);
 
         Assert.False(added);
-        Assert.Equal("Speichern nicht möglich", error);
+        Assert.Equal("Saving not possible", error);
     }
 
     [Fact]
@@ -225,7 +225,7 @@ public class FavoriteServiceTests
         var (success, error) = await sut.DeleteByIdAsync("", 42);
 
         Assert.False(success);
-        Assert.Equal("User darf nicht leer sein", error);
+        Assert.Equal("User must not be empty", error);
     }
 
     [Fact]
@@ -240,7 +240,7 @@ public class FavoriteServiceTests
         var (success, error) = await sut.DeleteByIdAsync("app-1", 42);
 
         Assert.False(success);
-        Assert.Equal("Benutzer nicht gefunden", error);
+        Assert.Equal("User not found", error);
     }
 
     [Fact]
@@ -260,7 +260,7 @@ public class FavoriteServiceTests
         var (success, error) = await sut.DeleteByIdAsync("app-1", 42);
 
         Assert.False(success);
-        Assert.Equal("Favorit nicht gefunden oder nicht gelöscht", error);
+        Assert.Equal("Favorite not found or deleted", error);
     }
 
     [Fact]

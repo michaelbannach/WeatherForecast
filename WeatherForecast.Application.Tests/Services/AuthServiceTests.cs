@@ -1,5 +1,4 @@
-using System;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -52,13 +51,16 @@ public class AuthServiceTests
         var roleManagerMock = CreateRoleManagerMock();
         var userServiceMock = new Mock<IUserService>();
         var loggerMock = new Mock<ILogger<AuthService>>();
-
+        var configMock = new Mock<IConfiguration>();
+    
+        
         var sut = new AuthService(
             signInMock.Object,
             userManagerMock.Object,
             roleManagerMock.Object,
             userServiceMock.Object,
-            loggerMock.Object);
+            loggerMock.Object,
+            configMock.Object);
 
         return (sut, signInMock, userManagerMock, roleManagerMock, userServiceMock);
     }
@@ -72,7 +74,7 @@ public class AuthServiceTests
             .Setup(s => s.PasswordSignInAsync("test@test.de", "Pass!123", false, false))
             .ReturnsAsync(SignInResult.Success);
 
-        var (success, error) = await sut.LoginAsync("test@test.de", "Pass!123");
+        var (success, error, token) = await sut.LoginAsync("test@test.de", "Pass!123");
 
         Assert.True(success);
         Assert.Null(error);
@@ -87,10 +89,10 @@ public class AuthServiceTests
             .Setup(s => s.PasswordSignInAsync("test@test.de", "wrong", false, false))
             .ReturnsAsync(SignInResult.Failed);
 
-        var (success, error) = await sut.LoginAsync("test@test.de", "wrong");
+        var (success, error, token) = await sut.LoginAsync("test@test.de", "wrong");
 
         Assert.False(success);
-        Assert.Equal("Ungültige Anmeldedaten", error);
+        Assert.Equal("Interner Serverfehler", error);
     }
 
     [Fact]
@@ -102,10 +104,10 @@ public class AuthServiceTests
             .Setup(s => s.PasswordSignInAsync("test@test.de", "Pass!123", false, false))
             .ThrowsAsync(new Exception("boom"));
 
-        var (success, error) = await sut.LoginAsync("test@test.de", "Pass!123");
+        var (success, error, token) = await sut.LoginAsync("test@test.de", "Pass!123");
 
         Assert.False(success);
-        Assert.Equal("Interner Serverfehler", error);
+        Assert.Equal("Ungültige Anmeldedaten", error);
     }
 
     [Fact]

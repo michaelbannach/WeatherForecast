@@ -1,8 +1,4 @@
 using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -48,8 +44,19 @@ public class WeatherServiceTests
 
     private WeatherService CreateService(HttpClient client)
     {
+        // Test-Konfiguration bereitstellen
+        var settings = new Dictionary<string, string?>
+        {
+            ["OpenWeatherMap:BaseUrl"] = "https://api.openweathermap.org/data/2.5/",
+            ["OpenWeatherMap:ApiKey"]  = "TEST_API_KEY"
+        };
+
+        IConfiguration config = new ConfigurationBuilder()
+            .AddInMemoryCollection(settings!)
+            .Build();
+
         var loggerMock = new Mock<ILogger<WeatherService>>();
-        var config = CreateConfig();
+
         return new WeatherService(client, config, loggerMock.Object);
     }
 
@@ -62,7 +69,7 @@ public class WeatherServiceTests
         var (data, error) = await sut.GetWeatherAsync("", "DE");
 
         Assert.Null(data);
-        Assert.Equal("Bitte eine Stadt angeben.", error);
+        Assert.Equal("Specify a City.", error);
     }
 
     [Fact]
@@ -129,7 +136,7 @@ public class WeatherServiceTests
         var (data, error) = await sut.GetThreeDayForecastAsync("", "DE");
 
         Assert.Null(data);
-        Assert.Equal("Bitte eine Stadt angeben.", error);
+        Assert.Equal("Specify a City.", error);
     }
 
     [Fact]

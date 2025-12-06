@@ -72,7 +72,7 @@ public class UserServiceTests
         var (success, error, created) = await sut.CreateUserAsync(user);
 
         Assert.False(success);
-        Assert.Equal("Vor- und Nachname erforderlich", error);
+        Assert.Equal("First- and Lastname required", error);
         Assert.Null(created);
         _userRepoMock.Verify(r => r.GetByApplicationUserIdAsync(It.IsAny<string>()), Times.Never);
     }
@@ -95,7 +95,7 @@ public class UserServiceTests
         var (success, error, created) = await sut.CreateUserAsync(user);
 
         Assert.False(success);
-        Assert.Equal("User existiert bereits", error);
+        Assert.Equal("User already exists", error);
         Assert.Null(created);
         _userRepoMock.Verify(r => r.CreateAsync(It.IsAny<User>()), Times.Never);
     }
