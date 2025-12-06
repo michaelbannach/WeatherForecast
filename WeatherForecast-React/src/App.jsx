@@ -24,7 +24,7 @@ export default function App() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // Wetter für die Hauptseite (Suche) laden
+    
     const loadWeather = async (c, co) => {
         setError("");
         setWeather(null);
@@ -103,24 +103,37 @@ export default function App() {
     const handleAddToFavorites = async () => {
         if (!weather) return;
 
+        
+        const token = localStorage.getItem("jwt");
+        if (!token) {
+            alert("Bitte zuerst einloggen (SuperUser), um Favoriten zu speichern.");
+            return;
+        }
+
         try {
             const resp = await fetch(`${API_BASE}/api/favorite`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,   // <-- WICHTIG
+                },
                 body: JSON.stringify({
                     city: weather.city,
                     country: weather.country,
                 }),
             });
 
-            if (!resp.ok) throw new Error(await resp.text());
+            if (!resp.ok) {
+                const msg = await resp.text();
+                throw new Error(msg || "Fehler beim Speichern des Favoriten");
+            }
 
             alert("Ort als Favorit gespeichert!");
         } catch (err) {
             alert(err.message);
         }
     };
+
 
     return (
         <SidebarProvider>

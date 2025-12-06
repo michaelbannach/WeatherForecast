@@ -137,10 +137,22 @@ namespace WeatherForecast.Application.Services
         private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
         {
             var jwtSection = _configuration.GetSection("Jwt");
-            var key = jwtSection["Key"]!;
+
+            var key = jwtSection["Key"];
             var issuer = jwtSection["Issuer"];
             var audience = jwtSection["Audience"];
             var expiresMinutes = int.TryParse(jwtSection["ExpiresMinutes"], out var m) ? m : 60;
+
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                
+                throw new InvalidOperationException("Jwt:Key is missing or empty in configuration");
+            }
+
+            if (string.IsNullOrWhiteSpace(issuer) || string.IsNullOrWhiteSpace(audience))
+            {
+                throw new InvalidOperationException("Jwt:Issuer or Jwt:Audience is missing in configuration");
+            }
 
             var claims = new List<Claim>
             {
@@ -150,7 +162,7 @@ namespace WeatherForecast.Application.Services
                 new Claim(ClaimTypes.Name, user.Email ?? "")
             };
 
-            foreach (var role in roles)
+            foreach (var role in roles ?? Array.Empty<string>())
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
@@ -168,6 +180,7 @@ namespace WeatherForecast.Application.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
  
     }
 }

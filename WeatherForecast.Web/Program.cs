@@ -29,6 +29,11 @@ var jwtKey = jwtSection["Key"];
 var jwtIssuer = jwtSection["Issuer"];
 var jwtAudience = jwtSection["Audience"];
 
+Console.WriteLine("### Jwt:Key      = '" + (jwtKey ?? "<null>") + "'");
+Console.WriteLine("### Jwt:Issuer   = '" + (jwtIssuer ?? "<null>") + "'");
+Console.WriteLine("### Jwt:Audience = '" + (jwtAudience ?? "<null>") + "'");
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
@@ -193,7 +198,7 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("Frontend"); 
 app.UseAuthentication();

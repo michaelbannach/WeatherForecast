@@ -16,7 +16,6 @@ export default function LoginPage() {
         try {
             const resp = await fetch(`${API_BASE}/api/auth/login`, {
                 method: "POST",
-                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
             });
@@ -26,12 +25,20 @@ export default function LoginPage() {
                 throw new Error(msg || "Login fehlgeschlagen");
             }
 
-            // Erfolgreich eingeloggt → Weiterleitung zur Wetter-Startseite
+            
+            const data = await resp.json();
+            const token = data.token;
+
+            
+            localStorage.setItem("jwt", token);
+
+            
             navigate("/");
         } catch (err) {
             setMessage(err.message);
         }
     };
+
 
     return (
         <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow w-full max-w-md">

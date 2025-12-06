@@ -31,8 +31,14 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
       ConnectionStrings__DefaultConnection: "Server=db;Port=3306;Database=WeatherForecastDb;User=appuser;Password=apppw;TreatTinyAsBoolean=true;"
+
       OpenWeatherMap__BaseUrl: "https://api.openweathermap.org/data/2.5/"
       OpenWeatherMap__ApiKey: "${OWM_API_KEY}"
+
+      Jwt__Key: "DIES_IST_EIN_RICHTIG_LANGER_SUPER_GEHEIMER_JWT_KEY_2025!"
+      Jwt__Issuer: "WeatherApi"
+      Jwt__Audience: "WeatherClient"
+      Jwt__ExpiresMinutes: "60"
 
 volumes:
   weather_db_data:

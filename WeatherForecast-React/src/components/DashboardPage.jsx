@@ -7,27 +7,43 @@ import WeatherDetailsCards from "./WeatherDetailsCards";
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:5000";
 
+const getAuthHeaders = () => {
+    const token = localStorage.getItem("jwt");
+    return token
+        ? { Authorization: `Bearer ${token}` }
+        : null;
+};
+
 export default function DashboardPage() {
     const [favorites, setFavorites] = useState([]);
     const [favoritesLoading, setFavoritesLoading] = useState(true);
     const [favoritesError, setFavoritesError] = useState("");
 
-    // Ausgewähltes Wetter auf dem Dashboard
+    
     const [weather, setWeather] = useState(null);
     const [forecast3Days, setForecast3Days] = useState([]);
     const [forecast5Days, setForecast5Days] = useState([]);
     const [weatherLoading, setWeatherLoading] = useState(false);
     const [weatherError, setWeatherError] = useState("");
 
-    //  Favoriten laden
+    // Load Favorites
     const loadFavorites = async () => {
         setFavoritesLoading(true);
         setFavoritesError("");
 
         try {
+            const authHeaders = getAuthHeaders();
+            if (!authHeaders) {
+                setFavoritesError("Bitte zuerst einloggen, um Favoriten zu laden.");
+                setFavoritesLoading(false);
+                return;
+            }
+
             const resp = await fetch(`${API_BASE}/api/favorite`, {
                 method: "GET",
-                credentials: "include",
+                headers: {
+                    ...authHeaders,
+                },
             });
 
             if (!resp.ok) {
@@ -44,11 +60,12 @@ export default function DashboardPage() {
         }
     };
 
+
     useEffect(() => {
         loadFavorites();
     }, []);
 
-    //  Wetter für angeklickten Favoriten laden
+    //  Load Weather clicked Favorite
     const loadWeatherForFavorite = async (city, country) => {
         if (!city || !country) return;
 
@@ -62,7 +79,7 @@ export default function DashboardPage() {
         const co = country.trim().toUpperCase();
 
         try {
-            // aktuelles Wetter
+            // Current Weather
             const respWeather = await fetch(
                 `${API_BASE}/api/weather/${encodeURIComponent(c)}/${encodeURIComponent(co)}`
             );
@@ -73,7 +90,7 @@ export default function DashboardPage() {
             const weatherData = await respWeather.json();
             setWeather(weatherData);
 
-            // 3-Tage-Forecast
+            // 3-Days-Forecast
             const resp3 = await fetch(
                 `${API_BASE}/api/weather/forecast/3days/${encodeURIComponent(c)}/${encodeURIComponent(co)}`
             );
@@ -90,7 +107,7 @@ export default function DashboardPage() {
                 }))
             );
 
-            // 5-Tage-Forecast
+            // 5-Days-Forecast
             const resp5 = await fetch(
                 `${API_BASE}/api/weather/forecast/5days/${encodeURIComponent(c)}/${encodeURIComponent(co)}`
             );
@@ -113,12 +130,20 @@ export default function DashboardPage() {
         }
     };
 
-    //  Favorit löschen
+    // Delete Favorite
     const handleRemove = async (id) => {
         try {
+            const authHeaders = getAuthHeaders();
+            if (!authHeaders) {
+                alert("Bitte zuerst einloggen, um Favoriten zu löschen.");
+                return;
+            }
+
             const resp = await fetch(`${API_BASE}/api/favorite/${id}`, {
                 method: "DELETE",
-                credentials: "include",
+                headers: {
+                    ...authHeaders,
+                },
             });
 
             if (!resp.ok) {
@@ -127,11 +152,11 @@ export default function DashboardPage() {
             }
 
             setFavorites((prev) => prev.filter((f) => f.id !== id));
-
         } catch (err) {
             alert(err.message);
         }
     };
+
 
     return (
         <div className="space-y-6">
