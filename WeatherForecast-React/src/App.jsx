@@ -13,7 +13,7 @@ import { FiveDayForecastCard } from "./components/FiveDayForecastCard";
 import { SearchCard } from "./components/SearchCard";
 import WeatherDetailsCards from "./components/WeatherDetailsCards";
 
-const API_BASE = "http://localhost:5278";
+const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:5000";
 
 export default function App() {
     const [city, setCity] = useState("");

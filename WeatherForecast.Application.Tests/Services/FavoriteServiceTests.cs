@@ -71,7 +71,7 @@ public class FavoriteServiceTests
         var (added, error) = await sut.AddFavoriteAsync("", new Favorite());
 
         Assert.False(added);
-        Assert.Equal("Unknown User", error);
+        Assert.Equal("Unknown user", error);
     }
 
     [Fact]

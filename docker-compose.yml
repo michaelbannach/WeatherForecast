@@ -1,0 +1,38 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: weather_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpw
+      MYSQL_DATABASE: WeatherForecastDb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppw
+    ports:
+      - "3307:3306"
+    volumes:
+      - weather_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uappuser -papppw"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: WeatherForecast.Web/Dockerfile
+    container_name: weather_api
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "5000:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__DefaultConnection: "Server=db;Port=3306;Database=WeatherForecastDb;User=appuser;Password=apppw;TreatTinyAsBoolean=true;"
+      OpenWeatherMap__BaseUrl: "https://api.openweathermap.org/data/2.5/"
+      OpenWeatherMap__ApiKey: "${OWM_API_KEY}"
+
+volumes:
+  weather_db_data:

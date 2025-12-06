@@ -40,10 +40,10 @@ public class AuthServiceTests
     }
 
     private (AuthService sut,
-             Mock<SignInManager<ApplicationUser>> signInMock,
-             Mock<UserManager<ApplicationUser>> userManagerMock,
-             Mock<RoleManager<IdentityRole>> roleManagerMock,
-             Mock<IUserService> userServiceMock)
+        Mock<SignInManager<ApplicationUser>> signInMock,
+        Mock<UserManager<ApplicationUser>> userManagerMock,
+        Mock<RoleManager<IdentityRole>> roleManagerMock,
+        Mock<IUserService> userServiceMock)
         CreateService()
     {
         var userManagerMock = CreateUserManagerMock();
@@ -51,16 +51,26 @@ public class AuthServiceTests
         var roleManagerMock = CreateRoleManagerMock();
         var userServiceMock = new Mock<IUserService>();
         var loggerMock = new Mock<ILogger<AuthService>>();
-        var configMock = new Mock<IConfiguration>();
-    
-        
+
+        var inMemorySettings = new Dictionary<string, string?>
+        {
+            ["Jwt:Key"] = "SuperSecretTestKeySuperSecretTestKey",
+            ["Jwt:Issuer"] = "TestIssuer",
+            ["Jwt:Audience"] = "TestAudience",
+            ["Jwt:ExpiresMinutes"] = "60"
+        };
+
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings!)
+            .Build();
+
         var sut = new AuthService(
             signInMock.Object,
             userManagerMock.Object,
             roleManagerMock.Object,
             userServiceMock.Object,
             loggerMock.Object,
-            configMock.Object);
+            configuration);
 
         return (sut, signInMock, userManagerMock, roleManagerMock, userServiceMock);
     }
@@ -68,47 +78,78 @@ public class AuthServiceTests
     [Fact]
     public async Task LoginAsync_success_returns_true()
     {
-        var (sut, signInMock, _, _, _) = CreateService();
+        var (sut, _, userManagerMock, _, _) = CreateService();
 
-        signInMock
-            .Setup(s => s.PasswordSignInAsync("test@test.de", "Pass!123", false, false))
-            .ReturnsAsync(SignInResult.Success);
+        var user = new ApplicationUser
+        {
+            Id = "user-1",
+            Email = "test@test.de",
+            UserName = "test@test.de"
+        };
+
+        userManagerMock
+            .Setup(m => m.FindByEmailAsync("test@test.de"))
+            .ReturnsAsync(user);
+
+        userManagerMock
+            .Setup(m => m.CheckPasswordAsync(user, "Pass!123"))
+            .ReturnsAsync(true);
+
+        userManagerMock
+            .Setup(m => m.GetRolesAsync(user))
+            .ReturnsAsync(new List<string> { "User" });
 
         var (success, error, token) = await sut.LoginAsync("test@test.de", "Pass!123");
 
         Assert.True(success);
         Assert.Null(error);
+        Assert.False(string.IsNullOrWhiteSpace(token));
     }
 
     [Fact]
     public async Task LoginAsync_invalid_credentials_returns_error()
     {
-        var (sut, signInMock, _, _, _) = CreateService();
+        var (sut, _, userManagerMock, _, _) = CreateService();
 
-        signInMock
-            .Setup(s => s.PasswordSignInAsync("test@test.de", "wrong", false, false))
-            .ReturnsAsync(SignInResult.Failed);
+        var user = new ApplicationUser
+        {
+            Id = "user-1",
+            Email = "test@test.de",
+            UserName = "test@test.de"
+        };
+
+        userManagerMock
+            .Setup(m => m.FindByEmailAsync("test@test.de"))
+            .ReturnsAsync(user);
+
+        userManagerMock
+            .Setup(m => m.CheckPasswordAsync(user, "wrong"))
+            .ReturnsAsync(false);
 
         var (success, error, token) = await sut.LoginAsync("test@test.de", "wrong");
 
         Assert.False(success);
-        Assert.Equal("Interner Serverfehler", error);
+        Assert.Equal("LoginAsync, CheckPassword: Invalid Login", error);
+        Assert.Null(token);
     }
+
 
     [Fact]
     public async Task LoginAsync_returns_internal_error_if_exception_thrown()
     {
-        var (sut, signInMock, _, _, _) = CreateService();
+        var (sut, _, userManagerMock, _, _) = CreateService();
 
-        signInMock
-            .Setup(s => s.PasswordSignInAsync("test@test.de", "Pass!123", false, false))
+        userManagerMock
+            .Setup(m => m.FindByEmailAsync("test@test.de"))
             .ThrowsAsync(new Exception("boom"));
 
         var (success, error, token) = await sut.LoginAsync("test@test.de", "Pass!123");
 
         Assert.False(success);
-        Assert.Equal("Ungültige Anmeldedaten", error);
+        Assert.Equal("LoginAsync:Internal Server error", error);
+        Assert.Null(token);
     }
+
 
     [Fact]
     public async Task RegisterAsync_returns_error_if_identity_creation_fails()

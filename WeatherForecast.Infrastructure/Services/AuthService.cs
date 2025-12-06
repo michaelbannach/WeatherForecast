@@ -1,4 +1,9 @@
 using Microsoft.AspNetCore.Identity;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Domain.Models;
 using WeatherForecast.Infrastructure.Models;
@@ -12,39 +17,55 @@ namespace WeatherForecast.Application.Services
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUserService _userService;
         private readonly ILogger<AuthService> _logger;
+        private readonly IConfiguration _configuration;
 
         public AuthService(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IUserService userService,
-            ILogger<AuthService> logger)
+            ILogger<AuthService> logger,
+            IConfiguration configuration)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
             _userService = userService;
             _logger = logger;
+            _configuration = configuration;
         }
-        public async Task<(bool success, string? error)> LoginAsync(string email, string password)
+        public async Task<(bool success, string? error, string? token)> LoginAsync(string email, string password)
         {
             try
             {
-                var result = await _signInManager.PasswordSignInAsync(email, password, isPersistent: false, lockoutOnFailure: false);
-                if (result.Succeeded)
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user == null)
                 {
-                    _logger.LogInformation("LoginAsync: User {Email} logged in successfully", email);
-                    return (true, null);
+                    _logger.LogWarning("LoginAsync: User {Email} not found", email);
+                    return (false, "LoginAsync, FindByEmailAsync: Invalid Login", null);
                 }
-                _logger.LogWarning("LoginAsync: Failed login attempt for {Email}", email);
-                return (false, "Ungültige Anmeldedaten");
+
+                var passwordValid = await _userManager.CheckPasswordAsync(user, password);
+                if (!passwordValid)
+                {
+                    _logger.LogWarning("LoginAsync: Invalid password for {Email}", email);
+                    return (false, "LoginAsync, CheckPassword: Invalid Login", null);
+                }
+
+                var roles = await _userManager.GetRolesAsync(user);
+
+                var token = GenerateJwtToken(user, roles);
+                _logger.LogInformation("LoginAsync, GetRolesAsync: User {Email} logged in, token issued", email);
+
+                return (true, null, token);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "LoginAsync: Unexpected error for {Email}", email);
-                return (false, "Interner Serverfehler");
+                return (false, "LoginAsync:Internal Server error", null);
             }
         }
+
 
         public async Task LogoutAsync()
         {
@@ -113,7 +134,40 @@ namespace WeatherForecast.Application.Services
             }
         }
         
-        
+        private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
+        {
+            var jwtSection = _configuration.GetSection("Jwt");
+            var key = jwtSection["Key"]!;
+            var issuer = jwtSection["Issuer"];
+            var audience = jwtSection["Audience"];
+            var expiresMinutes = int.TryParse(jwtSection["ExpiresMinutes"], out var m) ? m : 60;
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.Email ?? "")
+            };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var keyBytes = Encoding.UTF8.GetBytes(key);
+            var creds = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(expiresMinutes),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
  
     }
 }

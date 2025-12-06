@@ -5,7 +5,7 @@ import SunriseSunsetCards from "./SunriseSunsetCards";
 import { FiveDayForecastCard } from "./FiveDayForecastCard";
 import WeatherDetailsCards from "./WeatherDetailsCards";
 
-const API_BASE = "http://localhost:5278";
+const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:5000";
 
 export default function DashboardPage() {
     const [favorites, setFavorites] = useState([]);

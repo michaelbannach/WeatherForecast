@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,12 +32,12 @@ public class AuthController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var (success, error) = await _authService.LoginAsync(dto.Email, dto.Password);
-        if (!success)
+        var (success, error, token) = await _authService.LoginAsync(dto.Email, dto.Password);
+        if (!success || token == null)
             return Unauthorized(new { error });
 
         // JWT!!
-        return Ok(new { Message = "Login ok" });
+        return Ok(new { token });
     }
     
     [HttpPost("register")]
