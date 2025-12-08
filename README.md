@@ -90,7 +90,7 @@ Diese Layer-Trennung sorgt für testbaren, erweiterbaren und wartbaren Code.
 **Projekt klonen**
 ```
 git clone
-cd WeahterForecast
+cd WeatherForecast
 ```
 
 **.env Datei im Projektroot anlegen**
