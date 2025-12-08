@@ -3,17 +3,14 @@
 Eine kompakte Full-Stack-Anwendung zur Registrierung, Anmeldung, Wetterabfrage und Verwaltung persönlicher Favoriten.
 Mit Fokus auf Clean Architecutre.
 
-1. [Über das Projekt](#-über-das-projekt)
-2. [Features](#-features)
-3. [Architektur](#-architektur)
-4. [Technologiestack](#-technologiestack)
-5. [Quickstart](#-quickstart)
-6. [Backend Setup (Docker)](#-backend-setup-docker)
-7. [Frontend Setup (React--vite)](#-frontend-setup-react--vite)
-8. [API Beispiele](#-api-beispiele)
-9. [Screenshots](#-screenshots)
-10. [Motivation & Lernziele](#-motivation--lernziele)
-11. [Autor](#-autor)
+1. [Über das Projekt](#über-das-projekt)
+2. [Features](#features)
+3. [Architektur](#architektur)
+4. [Technologiestack](#technologiestack)
+5. [Quickstart](#quickstart)
+6. [Screenshots](#screenshots)
+7. [Motivation & Lernziele](-motivation--lernziele)
+8. [Autor](#autor)
 
 ## Über das Projekt
 WeatherForecast ist eine vollständige Fullstack-Anwendung, die Nutzern ermöglicht:
