@@ -110,10 +110,10 @@ Mit Fokus auf Clean Architecutre.
 ### Backend Setup & Konfiguration
 
 **Projekt klonen**
-<pre>```
+```
 git clone
 cd WeahterForecast
-```</pre>
+```
 
 
 **.env Datei Im Projektroot anlegen**
@@ -121,7 +121,7 @@ cd WeahterForecast
 OWM_API_KEY=DEIN_OPENWEATHERMAP_API_KEY
 ```
 
-### Backend starten
+**Backend starten**
 ```
 docker compose up --build
 ```
@@ -159,10 +159,11 @@ Dieses Projekt entstand, um:
 
 - Full-Stack Entwicklung mit .NET & React praktisch anzuwenden
 
-- eine mehrschichtige Architektur mit Services, Repositories und DTOs zu implementieren
+- Arbeit mit Clean Architecute in einem kompakten Projekt um später in Unternehmen Erfahrung zu haben
 
 - realistische Themen wie Authentifizierung, Rollen, externe APIs und UI/UX zu kombinieren
 
+  
 
 
 
