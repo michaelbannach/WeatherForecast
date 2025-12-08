@@ -1,104 +1,115 @@
 # WeatherForecast – Full-Stack Wetter App 
-ASP.NET Core + React
 
+Eine kompakte Full-Stack-Anwendung zur Registrierung, Anmeldung, Wetterabfrage und Verwaltung persönlicher Favoriten — mit Fokus auf Clean Architecture.
 
+1. [Über das Projekt](#über-das-projekt)
+2. [Features](#features)
+3. [Architektur](#architektur)
+4. [Technologiestack](#technologiestack)
+5. [Quickstart](#quickstart)
+6. [Screenshots](#screenshots)
+7. [Motivation & Lernziele](-motivation--lernziele)
+8. [Autor](#autor)
 
-WeatherForecast ist eine vollständige Full-Stack-Anwendung zur Abfrage von aktuellen Wetterdaten und Vorhersagen auf Basis der **OpenWeatherMap API**.  
-Die App bietet:
+## Über das Projekt
+WeatherForecast ist eine vollständige Fullstack-Anwendung, die Nutzern ermöglicht:
+- sich zu registrieren und anzumelden
+- Wetterdaten aus der OpenWeatherMap-API abzurufen
+- Lieblingsorte als Favoriten zu speichern
+- ihre gespeicherten Orte wieder abzurufen oder zu entfernen
 
-- Benutzerregistrierung & Login (ASP.NET Identity, Cookie-Auth)
-- Rollenmodell (**User / SuperUser**)
-- Verwaltung von Wetter-Favoriten
-- Modernes React-Frontend mit Dashboard, Karten & Icons
+Der Fokus des Projekts liegt auf Clean Architecture, sicherer Authentifizierung, Docker-Deployment und 
+einer modernen Benutzeroberfläche
 
 
 ## Features
+### Authentifizierung
 
-### Benutzer & Rollen
+- Registrierung & Login via ASP.NET Core Identity
+- JWT-basierte Authentifizierung
+- Passwort-Hashing, User-Management
+- Geschützte API-Routen
 
-- Registrierung über das Frontend mit Checkbox (Wahl zwischen User & SuperUser)
-- Login mit E-Mail & Passwort
-- Rollen:
-  - **User** - kann sich anmelden und Wetter abrufen
-  - **SuperUser** - kann zusätzlich Favoriten speichern
-- Geschützte Endpoints mit `[Authorize]` und `[Authorize(Roles = "SuperUser")]`
-
----
-
-### Wetterfunktionen
-
-- Aktuelles Wetter zu einer Stadt anhand von Stadtname und Ländercode (z. B. Berlin, DE)
-- Werte unter anderem:
-  - Temperatur & gefühlte Temperatur
-  - Luftfeuchtigkeit
-  - Komponente mit 3-Tage-Vorhersage
-  - Komponente mit 5-Tage-Vorhersage
- 
----
+### Wetterdaten
+- Suche nach Städten
+- Anzeige von Temperatur, Wind, Feuchtigkeit, Icons
+- Integration der OpenWeatherMap API
 
 ### Favoritensystem
 
-- Favoriten sind an den angemeldeten Benutzer gekoppelt
-- Pro Benutzer maximal 5 Favoriten
-- Duplicate-Check (Städte können nicht mehrmals gespeichert werden)
-- Komponente mit Auflistung der Favoriten + Löschfunktion in den Cards
-- Bei Klick auf einen Favoriten Darstellung verschiedener Wetterdetails in Komponenten
-
----
+- Städte als Favoriten speichern
+- Favoriten auflisten
+- Favoriten löschen
+- Zugriff nur für eingeloggte Benutzer
 
 ### Frontend
 
-- Modernes UI mit:
-  - Sidebar (Navigation: Suche & Dashboard, Logout)
-  - Suchansicht mit Formular (Stadt + Ländercode)
-  - Dashboard mit:
-    - Favoriten-Leiste
-    - Aktuellem Wetter
-    - Sonnenaufgang / -untergang
-    - Komponentenbasierte Architektur (z.B.: SearchCard, FavoriteStrip, DashboardPage, SunriseSunsetCards)
+- Moderne UI mit React & Vite
+- Zustandshandling via State Hooks
+- Fetch API / axios für API-Kommunikation
+- JWT-Handling & LocalStorage
+- Responsive Design mit TailwindCSS
 
    ---
 
-
-
-  ### Backend (ASP.NET Core Web API)
+## Architektur
 
 <img src="docs/screenshots/Diagramm.png" width="500px">
 
-- UI(Frontend)    - Benutzerinteratkion & Darstellung
-- Web Layer       - API, Validierung, Routing
-- Application     - Business-Orchestrierung, UseCases
-- Domain          - Reine Geschäftslogik ohne Framework
-- Infrastructure  - Technische Umsetzung, externer Zugriff
-- DB              - Persistenzschicht
+```
+WeatherForecast.Web            → Controller, Endpoints, Program/DI, DTOs, Mapping
+WeatherForecast.Application    → Services, Interfaces
+WeatherForecast.Infrastructure → EF Core, Identity, DB-Kontext. OpenWeatherMap API
+WeatherForecast.Domain         → Domain Modelle
 
+```
+Diese Layer-Trennung sorgt für testbaren, erweiterbaren und wartbaren Code.
 **Abhängigkeiten zeichen nach innen**
  
   ---
 
-## Tech Stack
-
-**Frontend**
-
-- React (Vite)
-- React Router
-- Tailwind CSS
-- `lucide-react` Icons
-- UI-Komponenten (z. B. Sidebar)
+## Technologiestack
 
 **Backend**
-
+- C#/.NET 9
 - ASP.NET Core Web API
 - Entity Framework Core + MySQL
-- ASP.NET Identity (User & Rollen)
-- HttpClient für OpenWeatherMap
-- Logging (`Microsoft.Extensions.Logging`)
+- ASP.NET Identity + JWT Auth
+- Docker & Docker Compose
 
-**Externe Dienste**
-
-- OpenWeatherMap - aktuelle Wetterdaten & Forecast
+**Frontend**
+- React
+- Vite
+- Tailwind CSS
+- Axios
 
 ---
+
+## Quickstart
+
+**Projekt klonen**
+```
+git clone
+cd WeahterForecast
+```
+
+**.env Datei im Projektroot anlegen**
+```
+OWM_API_KEY=Hier bitte eigenen OpenWeatherMap API-Key einfügen
+```
+
+**Backend starten**
+```
+docker compose up --build
+```
+
+**Frontend starten**
+```
+cd WeatherForecast-React
+npm install
+npm run dev
+```
+
 
 ## Screenshots
 
@@ -110,69 +121,30 @@ Die App bietet:
 
 <img src="docs/screenshots/Dashboard.png" width="350px">
 
-### Backend Setup & Konfiguration
-
-Projekt klonen
-<pre>```
-git clone
-cd WeahterForecast
-```</pre>
-
-Konfiguration(appsettings.json)
-<pre>```
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=WeatherForecast;User Id=deinUser;Password=deinPasswort;"
-  },
-  "OpenWeatherMap": {
-    "BaseUrl": "https://api.openweathermap.org/data/2.5/",
-    "ApiKey": "<DEIN_OWM_API_KEY>"
-  }
-}
-```</pre>
-
-Migrationen/Datenbank
-<pre>```
-cd WeatherForecast.Infrastructure
-
-dotnet ef database update
-```</pre>
-
-Backend starten
-<pre>```
-cd WeatherForecast.Web
-dotnet run
-```</pre>
-
-### Frontend - Setup & Start
-
-Abhängigkeit installieren
-<pre>```
-cd WeatherForecast-React
-npm install
-```</pre>
-
-Dev-Server starten
-```
-npm run dev
-```
 
 
 
 ## Motivation & Lernziele
 
-Dieses Projekt entstand, um:
+Mir ist wichtig, die Technologien und Architekturprinzipien zu lernen,
+die auch in professionellen Softwareprojekten eingesetzt werden.
 
-- Full-Stack Entwicklung mit .NET & React praktisch anzuwenden
+Dieses Projekt entstand daher bewusst als kompakter, aber realitätsnaher Übungsanwendungsfall,
+um zentrale Konzepte wie:
 
-- eine mehrschichtige Architektur mit Services, Repositories und DTOs zu implementieren
+- mehrschichtige Architektur (Controller → Services → Infrastructure → Domain)
+- saubere Trennung von Verantwortlichkeiten
+- Identity & JWT-Authentifizierung
+- persistente Datenhaltung mit EF Core & MySQL
+- Docker-basierte Bereitstellung
+- Frontend-Integration über klare API-Schnittstellen
 
-- realistische Themen wie Authentifizierung, Rollen, externe APIs und UI/UX zu kombinieren
+praktisch zu beherrschen.
 
+Durch das Arbeiten mit Layer Architecture, Docker, JWT und einem getrennten React-Frontend
+möchte ich mir die Fähigkeiten aneignen, die mir den Einstieg in professionelle Entwicklungsteams erleichtern.
 
-
-
-
+  
 ## Autor
 
 **Name:** Michael Bannach
