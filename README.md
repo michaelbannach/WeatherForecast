@@ -1,12 +1,9 @@
 # WeatherForecast – Full-Stack Wetter App 
-ASP.NET Core + React
 
+Eine kompakte Full-Stack-Anwendung zur Registrierung, Anmeldung, Wetterabfrage und Verwaltung persönlicher Favoriten.
+Mit Fokus auf Clean Architecutre.
 
-
-WeatherForecast ist eine vollständige Full-Stack-Anwendung zur Abfrage von aktuellen Wetterdaten und Vorhersagen auf Basis der **OpenWeatherMap API**.  
-Die App bietet:
-
-- Benutzerregistrierung & Login (ASP.NET Identity, Cookie-Auth)
+- Benutzerregistrierung & Login (ASP.NET Identity, JWT)
 - Rollenmodell (**User / SuperUser**)
 - Verwaltung von Wetter-Favoriten
 - Modernes React-Frontend mit Dashboard, Karten & Icons
@@ -59,9 +56,9 @@ Die App bietet:
 
    ---
 
+## Architekturüberblick
 
-
-  ### Backend (ASP.NET Core Web API)
+  ### Backend (ASP.NET Core 9)
 
 <img src="docs/screenshots/Diagramm.png" width="500px">
 
@@ -112,51 +109,48 @@ Die App bietet:
 
 ### Backend Setup & Konfiguration
 
-Projekt klonen
+**Projekt klonen**
 <pre>```
 git clone
 cd WeahterForecast
 ```</pre>
 
-Konfiguration(appsettings.json)
-<pre>```
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=WeatherForecast;User Id=deinUser;Password=deinPasswort;"
-  },
-  "OpenWeatherMap": {
-    "BaseUrl": "https://api.openweathermap.org/data/2.5/",
-    "ApiKey": "<DEIN_OWM_API_KEY>"
-  }
-}
-```</pre>
 
-Migrationen/Datenbank
-<pre>```
-cd WeatherForecast.Infrastructure
+**.env Datei Im Projektroot anlegen**
+```
+OWM_API_KEY=DEIN_OPENWEATHERMAP_API_KEY
+```
 
-dotnet ef database update
-```</pre>
+### Backend starten
+```
+docker compose up --build
+```
 
-Backend starten
-<pre>```
-cd WeatherForecast.Web
-dotnet run
-```</pre>
+**Backend läuft unter:**
+- API     -> http://localhost:5000
 
-### Frontend - Setup & Start
+**Backend stoppen**
+```
+docker compose down
+```
 
-Abhängigkeit installieren
-<pre>```
+
+### Frontend starten (React + Vite)
+
+**ins Frontend wechseln**
+```
 cd WeatherForecast-React
-npm install
-```</pre>
+```
 
-Dev-Server starten
+**Abhängigkeiten installieren**
+```
+npm install
+```
+
+**Frontend starten**
 ```
 npm run dev
 ```
-
 
 
 ## Motivation & Lernziele
