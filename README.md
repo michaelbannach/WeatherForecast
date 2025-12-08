@@ -1,7 +1,6 @@
 # WeatherForecast – Full-Stack Wetter App 
 
-Eine kompakte Full-Stack-Anwendung zur Registrierung, Anmeldung, Wetterabfrage und Verwaltung persönlicher Favoriten.
-Mit Fokus auf Clean Architecutre.
+Eine kompakte Full-Stack-Anwendung zur Registrierung, Anmeldung, Wetterabfrage und Verwaltung persönlicher Favoriten — mit Fokus auf Clean Architecture.
 
 1. [Über das Projekt](#über-das-projekt)
 2. [Features](#features)
@@ -19,7 +18,7 @@ WeatherForecast ist eine vollständige Fullstack-Anwendung, die Nutzern ermögli
 - Lieblingsorte als Favoriten zu speichern
 - ihre gespeicherten Orte wieder abzurufen oder zu entfernen
 
-Der Fokus des Projekts liegt auf Clean Archtitecture, sichere Authentifizierung, Docker-Deployment und 
+Der Fokus des Projekts liegt auf Clean Architecture, sicherer Authentifizierung, Docker-Deployment und 
 einer modernen Benutzeroberfläche
 
 
@@ -142,8 +141,6 @@ um zentrale Konzepte wie:
 
 praktisch zu beherrschen.
 
-Ich baue dieses Projekt mit dem Ziel, die Technologien und Architekturkonzepte zu trainieren,
-die in modernen Unternehmen tatsächlich eingesetzt werden.
 Durch das Arbeiten mit Layer Architecture, Docker, JWT und einem getrennten React-Frontend
 möchte ich mir die Fähigkeiten aneignen, die mir den Einstieg in professionelle Entwicklungsteams erleichtern.
 
